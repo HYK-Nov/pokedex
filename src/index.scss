@@ -1,0 +1,11 @@
+* {
+  font-family: "NanumSquareNeo", sans-serif !important;
+  text-decoration: none;
+  color: inherit;
+
+  // 드래그 방지
+  user-select: none;
+  -ms-user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+}

@@ -1,0 +1,43 @@
+export const TYPE_COLORS: { [key: string]: string } = {
+    normal: "#A8A77A",
+    fire: "#EE8130",
+    water: "#6390F0",
+    grass: "#7AC74C",
+    flying: "#A98FF3",
+    fighting: "#C22E28",
+    poison: "#A33EA1",
+    electric: "#F7D02C",
+    ground: "#E2BF65",
+    rock: "#B6A136",
+    psychic: "#F95587",
+    ice: "#96D9D6",
+    bug: "#A6B91A",
+    ghost: "#735797",
+    steel: "#B7B7CE",
+    dragon: "#6F35FC",
+    dark: "#705746",
+    fairy: "#D685AD",
+} as const;
+type TYPE_COLORS = typeof TYPE_COLORS[keyof typeof TYPE_COLORS];
+
+export const TYPE_KO: { [key: string]: string } = {
+    normal: "노말",
+    fire: "불꽃",
+    water: "물",
+    grass: "풀",
+    flying: "비행",
+    fighting: "격투",
+    poison: "독",
+    electric: "전기",
+    ground: "땅",
+    rock: "바위",
+    psychic: "에스퍼",
+    ice: "얼음",
+    bug: "벌레",
+    ghost: "고스트",
+    steel: "강철",
+    dragon: "드래곤",
+    dark: "악",
+    fairy: "페어리",
+} as const;
+type TYPE_KO = typeof TYPE_KO[keyof typeof TYPE_KO];

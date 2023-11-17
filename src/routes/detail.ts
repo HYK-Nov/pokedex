@@ -1,21 +1,9 @@
-import {getPokemonDetail, getPokemonSpecies} from "../services/fetchPokemon.ts";
-import {IPokemonDetail, IPokemonSpecies} from "../ts/interface/pokemons.interfaces.ts";
+import {getPokemonDetail} from "../services/fetchPokemon.ts";
 
 interface ILoaderParams {
     pokemonId: string | number;
 }
 
-interface ILoaderResult {
-    DETAIL: IPokemonDetail;
-    SPECIES: IPokemonSpecies;
-}
-
-type TLoaderFunction<T = any> = (args: { params: T }) => Promise<ILoaderResult>;
-
-export const loader: TLoaderFunction = async ({params}: { params: ILoaderParams }) => {
-    const [DETAIL, SPECIES] = await Promise.all([
-        getPokemonDetail(params.pokemonId),
-        getPokemonSpecies(params.pokemonId),
-    ]);
-    return {DETAIL, SPECIES};
+export const loader = ({params}: { params: ILoaderParams }) => {
+    return getPokemonDetail(params.pokemonId);
 }

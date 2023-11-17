@@ -1,17 +1,18 @@
 import {Container} from "@mantine/core";
 import {Outlet} from "react-router-dom";
+import Header from "./Header.tsx";
+import ScrollToTopBtn from "../common/ScrollToTopBtn.tsx";
 
 function Layout() {
     return (
         <>
-            <header>
-                <Container>
-                    Header
-                </Container>
-            </header>
-            <div style={{margin:"5vh auto"}}>
-                <Outlet/>
+            <Header/>
+            <div style={{position: "fixed", zIndex: "999", bottom: "2vh", right: "2vw"}}>
+                <ScrollToTopBtn/>
             </div>
+            <Container style={{margin: "5vh auto"}}>
+                <Outlet/>
+            </Container>
             <footer>
                 <Container>
                     Footer

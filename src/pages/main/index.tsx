@@ -4,8 +4,11 @@ import {IPokemon} from "../../ts/interface/pokemons.interfaces.ts";
 import {getPokemonList} from "../../services/fetchPokemon.ts";
 import {useInfiniteScroll} from "../../hooks/useInfiniteScroll.ts";
 import PokemonList from "./components/PokemonList.tsx";
+import {useRecoilValue} from "recoil";
+import {lastIdState} from "../../contexts/lastId.ts";
 
 function Main() {
+    const lastId = useRecoilValue(lastIdState);
     const [offset, setOffset] = useState(0);
     const [DATA, setDATA] = useState<IPokemon[]>([]);
     const [hasNextPage, setHasNextPage] = useState(false);
@@ -18,7 +21,8 @@ function Main() {
             getPokemonList(offset)
                 .then(res => {
                     setDATA(prev => [...prev, ...res.results]);
-                    (!res.next) ?
+
+                    (!res.next || offset >= lastId) ?
                         setHasNextPage(false) :
                         setOffset(prev => prev + 30);
                 })
@@ -38,10 +42,10 @@ function Main() {
     }, []);
 
     return (
-        <Container>
+        <>
             <PokemonList data={DATA}/>
-            <div ref={ref} style={{height:"1px"}}/>
-        </Container>
+            <div ref={ref} style={{height: "1px"}}/>
+        </>
     );
 }
 

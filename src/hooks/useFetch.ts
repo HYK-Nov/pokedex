@@ -1,5 +1,4 @@
 import {getPokemonDetail, getPokemonSpecies} from "../services/fetchPokemon.ts";
-import {Await} from "react-router-dom";
 
 export const findId = async (data: string | number) => {
     try {
@@ -12,6 +11,10 @@ export const findId = async (data: string | number) => {
 
 export const findSprite = (data: string | number) => {
     return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${data}.png`;
+}
+
+export const findArtwork = (data: string | number) => {
+    return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${data}.png`;
 }
 
 export const findKoName = async (data: string | number) => {

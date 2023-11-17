@@ -1,5 +1,4 @@
 import {useEffect, useState} from 'react';
-import {Container} from "@mantine/core";
 import {IPokemon} from "../../ts/interface/pokemons.interfaces.ts";
 import {getPokemonList} from "../../services/fetchPokemon.ts";
 import {useInfiniteScroll} from "../../hooks/useInfiniteScroll.ts";

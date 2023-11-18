@@ -9,13 +9,17 @@ export const router = createBrowserRouter([
         element: <Layout/>,
         children: [
             {
-                path: "/",
+                path: "",
                 element: <Main/>,
             },
             {
                 path: "pokemon/:pokemonId",
                 loader: detailLoader,
                 element: <Detail/>,
+            },
+            {
+                path: "type/:type",
+                element: <></>,
             },
         ]
     }

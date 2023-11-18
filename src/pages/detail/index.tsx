@@ -1,7 +1,7 @@
 import {useLoaderData} from "react-router-dom";
 import {IPokemonDetail, IPokemonSpecies} from "../../ts/interface/pokemons.interfaces.ts";
 import {useEffect, useState} from "react";
-import {findKoName, findSprite} from "../../hooks/useFetch.ts";
+import {useFetch} from "../../hooks/useFetch.ts";
 import {Title} from "@mantine/core";
 
 function Detail() {
@@ -11,9 +11,10 @@ function Detail() {
     const [name, setName] = useState("");
     const [species, setSpecies] = useState<IPokemonSpecies>();
 
+    const {findName, findSprite} = useFetch();
     useEffect(() => {
         setSprite(findSprite(id!));
-        findKoName(id!)
+        findName(id!)
             .then(res => setName(res!));
     }, []);
 

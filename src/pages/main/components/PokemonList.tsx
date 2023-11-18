@@ -13,7 +13,7 @@ function PokemonList({data}: { data: IPokemon[] }) {
         }), [data]);
 
     return (
-        <SimpleGrid cols={{ base: 1, sm: 3, md: 5 }}>
+        <SimpleGrid cols={{ base: 2, sm: 3, md: 5 }}>
             {items}
         </SimpleGrid>
     );

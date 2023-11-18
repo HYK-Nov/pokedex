@@ -1,5 +1,6 @@
-import {Button} from "@mantine/core";
+import {ActionIcon} from "@mantine/core";
 import {useEffect, useState} from "react";
+import {IconArrowBarToUp} from "@tabler/icons-react";
 
 function ScrollToTopBtn() {
     const [showButton, setShowButton] = useState(false);
@@ -23,7 +24,9 @@ function ScrollToTopBtn() {
     return (
         <>
             {showButton &&
-                <Button onClick={scrollToTop}></Button>
+                <ActionIcon size={"3.5rem"} radius={"xl"} variant={"outline"} onClick={scrollToTop}>
+                    <IconArrowBarToUp/>
+                </ActionIcon>
             }
         </>
     );

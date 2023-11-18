@@ -5,6 +5,7 @@ import {useInfiniteScroll} from "../../hooks/useInfiniteScroll.ts";
 import PokemonList from "./components/PokemonList.tsx";
 import {useRecoilValue} from "recoil";
 import {lastIdState} from "../../contexts/lastId.ts";
+import {Loader, Stack} from "@mantine/core";
 
 function Main() {
     const lastId = useRecoilValue(lastIdState);
@@ -41,10 +42,11 @@ function Main() {
     }, []);
 
     return (
-        <>
+        <Stack gap={"1.5rem"} align={"center"}>
             <PokemonList data={DATA}/>
+            {loading && <Loader/>}
             <div ref={ref} style={{height: "1px"}}/>
-        </>
+        </Stack>
     );
 }
 

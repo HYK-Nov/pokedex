@@ -14,10 +14,6 @@ export function useFetch() {
         }
     }
 
-    const findSprite = (data: string | number) => {
-        return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${data}.png`;
-    }
-
     const findArtwork = (data: string | number) => {
         return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${data}.png`;
     }
@@ -26,6 +22,15 @@ export function useFetch() {
         try {
             const res = await getPokemonSpecies(data);
             return res.names.find((item) => item.language.name === language)?.name;
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    const findFlavorText = async (data: string | number) => {
+        try {
+            const res = await getPokemonSpecies(data);
+            return res.flavor_text_entries.filter((item) => item.language.name === language);
         } catch (e) {
             console.error(e);
         }
@@ -40,5 +45,5 @@ export function useFetch() {
         }
     }
 
-    return {findName, findSprite, findArtwork, findTypes, findId}
+    return {findName, findArtwork, findTypes, findId, findFlavorText}
 }

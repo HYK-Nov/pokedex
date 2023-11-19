@@ -41,3 +41,18 @@ export const TYPE_KO: { [key: string]: string } = {
     fairy: "페어리",
 } as const;
 type TYPE_KO = typeof TYPE_KO[keyof typeof TYPE_KO];
+
+export const VERSION_KO: {[key: string]:string}={
+    x: "X",
+    y: "Y",
+    "omega-ruby": "오메가 루비",
+    "alpha-sapphire": "알파 사파이어",
+    sun: "썬",
+    moon: "문",
+    "ultra-sun": "울트라 썬",
+    "ultra-moon": "울트라 문",
+    "lets-go-pikachu": "렛츠고 피카쥬",
+    "lets-go-eevee": "렛츠고 이브이",
+    sword: "소드",
+    shield: "실드",
+}

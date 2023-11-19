@@ -175,17 +175,7 @@ export interface IPokemonSpecies {
         name: string;
         url: string;
     };
-    flavor_text_entries: {
-        flavor_text: string;
-        language: {
-            name: string;
-            url: string;
-        };
-        version: {
-            name: string;
-            url: string;
-        }
-    }[];
+    flavor_text_entries: IPokemonFlavorText[];
     form_descriptions: {}[];
     forms_switchable: boolean;
     gender_rate: number;
@@ -270,4 +260,16 @@ export interface IPokemonType {
         name: string;
         url: string;
     }
+}
+
+export interface IPokemonFlavorText {
+    flavor_text: string;
+    language: {
+        name: string;
+        url: string;
+    };
+    version: {
+        name: string;
+        url: string;
+    };
 }

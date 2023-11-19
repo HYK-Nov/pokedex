@@ -10,7 +10,7 @@ function Layout() {
             <div style={{position: "fixed", zIndex: "999", bottom: "2vh", right: "2vw"}}>
                 <ScrollToTopBtn/>
             </div>
-            <Container style={{margin: "5vh auto"}}>
+            <Container style={{margin: "4vh auto"}}>
                 <Outlet/>
             </Container>
             <footer>

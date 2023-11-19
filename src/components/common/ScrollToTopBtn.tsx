@@ -24,7 +24,9 @@ function ScrollToTopBtn() {
     return (
         <>
             {showButton &&
-                <ActionIcon size={"3.5rem"} radius={"xl"} variant={"outline"} onClick={scrollToTop}>
+                <ActionIcon size={"3.5rem"} radius={"xl"} variant={"filled"} onClick={scrollToTop}
+                            // style={{backgroundColor: rgba("#ffffff", 0.5)}}
+                >
                     <IconArrowBarToUp/>
                 </ActionIcon>
             }

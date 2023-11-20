@@ -1,6 +1,7 @@
 import {getPokemonDetail, getPokemonSpecies} from "../services/fetchPokemon.ts";
 import {useRecoilValue} from "recoil";
 import {languageState} from "../contexts/language.ts";
+import {IPokemonSpecies} from "../ts/interface/pokemons.interfaces.ts";
 
 export function useFetch() {
     const language = useRecoilValue(languageState);
@@ -27,6 +28,10 @@ export function useFetch() {
         }
     }
 
+    const findGenus = async (data: IPokemonSpecies) => {
+        return data.genera.find((item) => item.language.name === language)?.genus;
+    }
+
     const findFlavorText = async (data: string | number) => {
         try {
             const res = await getPokemonSpecies(data);
@@ -45,5 +50,5 @@ export function useFetch() {
         }
     }
 
-    return {findName, findArtwork, findTypes, findId, findFlavorText}
+    return {findName, findArtwork, findTypes, findId, findFlavorText, findGenus}
 }

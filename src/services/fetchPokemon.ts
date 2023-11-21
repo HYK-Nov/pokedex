@@ -18,3 +18,9 @@ export const getPokemonList = async (offset: number) => {
         .then(res => res.data)
         .catch(e => console.error(e));
 }
+
+export const getPokemonAbility = async (data: string | number) => {
+    return await axios.get(`https://pokeapi.co/api/v2/ability/${data}`)
+        .then(res => res.data)
+        .catch(e => console.error(e));
+}

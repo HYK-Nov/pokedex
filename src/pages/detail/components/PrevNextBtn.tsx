@@ -13,7 +13,10 @@ function PrevNextBtn({id, name, current}: IProps) {
     return (
         <UnstyledButton onClick={() => navigate(`/${id}`)}>
             <Flex align={"center"}>
-                <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`} alt={name}/>
+                <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`}
+                     alt={name}
+                     placeholder={`https://placehold.co/100x100?text=${name}`}
+                />
                 <Stack gap={"0.5rem"}>
                     <Text size={"0.8rem"} fw={current ? "bold" : "normal"}>No. {id}</Text>
                     <Text size={"1.3rem"} fw={current ? "bold" : "normal"}>{name}</Text>

@@ -262,6 +262,15 @@ export interface IPokemonType {
     }
 }
 
+export interface IPokemonAbility {
+    slot: number;
+    is_hidden: boolean;
+    ability:{
+        name: string;
+        url: string;
+    };
+}
+
 export interface IPokemonFlavorText {
     flavor_text: string;
     language: {

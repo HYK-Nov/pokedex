@@ -1,7 +1,7 @@
-import {getPokemonDetail, getPokemonSpecies} from "../services/fetchPokemon.ts";
+import {getPokemonAbility, getPokemonDetail, getPokemonSpecies} from "../services/fetchPokemon.ts";
 import {useRecoilValue} from "recoil";
 import {languageState} from "../contexts/language.ts";
-import {IPokemonSpecies} from "../ts/interface/pokemons.interfaces.ts";
+import {IPokemonAbility, IPokemonSpecies} from "../ts/interface/pokemons.interfaces.ts";
 
 export function useFetch() {
     const language = useRecoilValue(languageState);
@@ -32,10 +32,26 @@ export function useFetch() {
         return data.genera.find((item) => item.language.name === language)?.genus;
     }
 
-    const findFlavorText = async (data: string | number) => {
+    const findAbilities = async (data: IPokemonAbility[]) => {
         try {
-            const res = await getPokemonSpecies(data);
-            return res.flavor_text_entries.filter((item) => item.language.name === language);
+            const promises = data.map(async (item) => {
+                const res = await getPokemonAbility(item.ability.url.split("/")[6]);
+                const flavor_text = res.flavor_text_entries.findLast((entry: { language: { name: string; }; }) => entry.language.name === language);
+                const name = res.names.find((item: { language: { name: string; }; }) => item.language.name === language);
+
+                return {flavor_text, name};
+            });
+
+            return await Promise.all(promises);
+        }catch (e) {
+            console.error(e);
+            return [];
+        }
+    }
+
+    const findFlavorTexts = async (data: IPokemonSpecies) => {
+        try {
+            return data.flavor_text_entries.filter((item) => item.language.name === language);
         } catch (e) {
             console.error(e);
         }
@@ -50,5 +66,5 @@ export function useFetch() {
         }
     }
 
-    return {findName, findArtwork, findTypes, findId, findFlavorText, findGenus}
+    return {findName, findArtwork, findTypes, findId, findFlavorTexts, findGenus, findAbilities}
 }

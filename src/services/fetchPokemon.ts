@@ -24,3 +24,9 @@ export const getPokemonAbility = async (data: string | number) => {
         .then(res => res.data)
         .catch(e => console.error(e));
 }
+
+export const getPokemonEggGroup = async (data: string | number) => {
+    return await axios.get(`https://pokeapi.co/api/v2/egg-group/${data}`)
+        .then(res => res.data)
+        .catch(e => console.error(e));
+}

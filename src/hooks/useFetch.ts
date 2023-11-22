@@ -1,7 +1,7 @@
-import {getPokemonAbility, getPokemonDetail, getPokemonSpecies} from "../services/fetchPokemon.ts";
+import {getPokemonAbility, getPokemonDetail, getPokemonEggGroup, getPokemonSpecies} from "../services/fetchPokemon.ts";
 import {useRecoilValue} from "recoil";
 import {languageState} from "../contexts/language.ts";
-import {IPokemonAbility, IPokemonSpecies} from "../ts/interface/pokemons.interfaces.ts";
+import {IPokemon, IPokemonAbility, IPokemonSpecies} from "../ts/interface/pokemons.interfaces.ts";
 
 export function useFetch() {
     const language = useRecoilValue(languageState);
@@ -49,6 +49,22 @@ export function useFetch() {
         }
     }
 
+    const findEggGroups = async (data: IPokemon[]) => {
+        try {
+            const promises = data.map(async (item) => {
+                const res = await getPokemonEggGroup(item.url.split("/")[6]);
+                const egg_group = [...res.names].find(item => item.language.name === language).name;
+
+                return egg_group;
+            });
+
+            return await Promise.all(promises);
+        }catch (e) {
+            console.error(e);
+            return [];
+        }
+    }
+
     const findFlavorTexts = async (data: IPokemonSpecies) => {
         try {
             return data.flavor_text_entries.filter((item) => item.language.name === language);
@@ -66,5 +82,5 @@ export function useFetch() {
         }
     }
 
-    return {findName, findArtwork, findTypes, findId, findFlavorTexts, findGenus, findAbilities}
+    return {findName, findArtwork, findTypes, findId, findFlavorTexts, findGenus, findAbilities, findEggGroups}
 }

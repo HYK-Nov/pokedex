@@ -11,7 +11,7 @@ function PrevNextBtn({id, name, current}: IProps) {
     const navigate = useNavigate();
 
     return (
-        <UnstyledButton onClick={() => navigate(`/${id}`)}>
+        <UnstyledButton onClick={() => navigate(`/pokedex/${id}`)}>
             <Flex align={"center"}>
                 <Image src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`}
                      alt={name}

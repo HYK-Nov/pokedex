@@ -27,7 +27,7 @@ function PokemonBtn({data}: { data: IPokemon }) {
     return (
         <>
             {(Number(id) <= lasId) &&
-                <UnstyledButton onClick={() => navigate(`/${id}`)}>
+                <UnstyledButton onClick={() => navigate(`/pokedex/${id}`)}>
                     <Paper shadow={"xs"} p={"md"} style={{height: "100%"}}>
                         <Stack gap={"1.5rem"}>
                             <Stack gap={"0.3rem"}>

@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    base: "/pokedex/",
+    base: "/pokedex",
     plugins: [react()],
     server: {
         port: 3000,

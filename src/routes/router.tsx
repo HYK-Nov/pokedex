@@ -9,16 +9,16 @@ export const router = createBrowserRouter([
         element: <Layout/>,
         children: [
             {
-                path: "",
+                path: "/pokedex",
                 element: <Main/>,
             },
             {
-                path: ":pokemonId",
+                path: "/pokedex/:pokemonId",
                 loader: detailLoader,
                 element: <Detail/>,
             },
             {
-                path: "type/:type",
+                path: "/pokedex/type/:type",
                 element: <></>,
             },
         ]

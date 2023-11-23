@@ -6,13 +6,13 @@ function Header() {
     return (
         <Box bg={"red"}>
             <Container>
-                <Button onClick={() => navigate("")}>Pokedex</Button>
+                <Button onClick={() => navigate("/pokedex")}>Pokedex</Button>
                 <Menu trigger={"hover"}>
                     <Menu.Target>
                         <Button>도감</Button>
                     </Menu.Target>
                     <Menu.Dropdown>
-                        <Menu.Item onClick={() => navigate("type")}>타입</Menu.Item>
+                        <Menu.Item onClick={() => navigate("/pokedex/type")}>타입</Menu.Item>
                     </Menu.Dropdown>
                 </Menu>
             </Container>

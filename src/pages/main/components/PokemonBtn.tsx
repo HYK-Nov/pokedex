@@ -35,7 +35,8 @@ function PokemonBtn({data}: { data: IPokemon }) {
                                 <Title order={4}>{name}</Title>
                             </Stack>
                             {artwork && <Image src={artwork} alt={data.name}
-                                               fallbackSrc={`https://placehold.co/300x300?text=${data.name}`}/>}
+                                               fallbackSrc={`https://placehold.co/300x300?text=${data.name}`}
+                                               loading={"lazy"}/>}
                             {types[0] && <TypeBtn types={types}/>}
                         </Stack>
                     </Paper>

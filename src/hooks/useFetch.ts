@@ -1,4 +1,10 @@
-import {getPokemonAbility, getPokemonDetail, getPokemonEggGroup, getPokemonSpecies} from "../services/fetchPokemon.ts";
+import {
+    getPokemonAbility,
+    getPokemonDetail,
+    getPokemonEggGroup,
+    getPokemonGrowthRate,
+    getPokemonSpecies
+} from "../services/fetchPokemon.ts";
 import {useRecoilValue} from "recoil";
 import {languageState} from "../contexts/language.ts";
 import {IPokemon, IPokemonAbility, IPokemonSpecies} from "../ts/interface/pokemons.interfaces.ts";
@@ -65,6 +71,15 @@ export function useFetch() {
         }
     }
 
+    const findExp = async (data: IPokemon) => {
+        try {
+            const res = await getPokemonGrowthRate(data.url.split("/")[6]);
+            return res.levels.pop().experience;
+        }catch (e) {
+            console.error(e);
+        }
+    }
+
     const findFlavorTexts = async (data: IPokemonSpecies) => {
         try {
             return data.flavor_text_entries.filter((item) => item.language.name === language);
@@ -82,5 +97,5 @@ export function useFetch() {
         }
     }
 
-    return {findName, findArtwork, findTypes, findId, findFlavorTexts, findGenus, findAbilities, findEggGroups}
+    return {findName, findArtwork, findTypes, findId, findFlavorTexts, findGenus, findAbilities, findEggGroups, findExp}
 }

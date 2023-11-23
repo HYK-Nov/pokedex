@@ -28,11 +28,12 @@ function Detail() {
     const [prevName, setPrevName] = useState("");
     const [nextName, setNextName] = useState("");
     const [genus, setGenus] = useState("");
+    const [exp, setExp] = useState(0);
     const [flavorText, setFlavorText] = useState<IPokemonFlavorText[]>([]);
     const [abilities, setAbilities] = useState<IDetailAbilities[]>([]);
     const [eggGroup, setEggGroup] = useState<string[]>([]);
 
-    const {findName, findArtwork, findFlavorTexts, findGenus, findAbilities, findEggGroups} = useFetch();
+    const {findName, findArtwork, findFlavorTexts, findGenus, findAbilities, findEggGroups, findExp} = useFetch();
     useEffect(() => {
         setArtwork(findArtwork(id!));
 
@@ -57,8 +58,13 @@ function Detail() {
         findGenus(species)
             .then(res => setGenus(res!));
 
+        // 알 그룹 가져오기
         findEggGroups(species.egg_groups)
             .then(res => setEggGroup(res));
+
+        // 최대 경험치 가져오기
+        findExp(species.growth_rate)
+            .then(res => setExp(res));
 
         // 도감 설명 가져오기
         findFlavorTexts(species)
@@ -75,7 +81,7 @@ function Detail() {
             return 0;
         })
     const nameRows = names.map((item, idx) =>
-        <Text key={idx} style={{fontWeight: idx === 0 ? "bold" : "", fontSize:"0.9rem"}}>{item.name}</Text>);
+        <Text key={idx} style={{fontWeight: idx === 0 ? "bold" : "", fontSize: "0.9rem"}}>{item.name}</Text>);
 
     // 도감 설명 테이블 열
     const flavorTextRows = flavorText.map((item) => (
@@ -105,7 +111,8 @@ function Detail() {
             <Grid>
                 <Grid.Col span={4}>
                     <Image src={artwork} alt={curName}
-                           fallbackSrc={`https://placehold.co/300x300?text=${detail.name}`}/>
+                           fallbackSrc={`https://placehold.co/300x300?text=${detail.name}`}
+                           loading={"lazy"}/>
                 </Grid.Col>
                 <Grid.Col span={"auto"}>
                     <SimpleGrid cols={3}>
@@ -207,24 +214,34 @@ function Detail() {
                             <Table layout={"fixed"} withColumnBorders>
                                 <Table.Thead>
                                     <Table.Tr>
-                                        <Table.Th colSpan={3} style={{textAlign: "center"}}>
+                                        <Table.Th colSpan={5} style={{textAlign: "center"}}>
                                             <Title order={4}>유전 정보</Title>
                                         </Table.Th>
                                     </Table.Tr>
                                     <Table.Tr>
+                                        <Table.Th style={{textAlign: "center"}}>성비</Table.Th>
                                         <Table.Th style={{textAlign: "center"}}>알 그룹</Table.Th>
-                                        <Table.Th style={{textAlign: "center"}}>부화 카운트</Table.Th>
+                                        <Table.Th style={{textAlign: "center"}}>부화 걸음수</Table.Th>
+                                        <Table.Th style={{textAlign: "center"}}>최대 경험치량</Table.Th>
                                         <Table.Th style={{textAlign: "center"}}>포획률</Table.Th>
                                     </Table.Tr>
                                 </Table.Thead>
                                 <Table.Tbody>
                                     <Table.Tr>
+                                        <Table.Td align={"center"}>
+                                            {species.gender_rate !== -1 && (8 - species.gender_rate) / 8 * 100 < 100 &&
+                                                <>수컷: {(8 - species.gender_rate) / 8 * 100}%<br/></>}
+                                            {species.gender_rate !== -1 && species.gender_rate / 8 * 100 < 100 && `암컷: ${species.gender_rate / 8 * 100}%`}
+                                            {species.gender_rate === -1 && `없음`}
+                                        </Table.Td>
                                         {eggGroup.length > 0 &&
                                             <Table.Td align={"center"}>
                                                 {eggGroup[0]}
                                                 {eggGroup.length > 1 && `, ${eggGroup[1]}`}
                                             </Table.Td>}
-                                        <Table.Td align={"center"}>{detail.stats[1].base_stat}</Table.Td>
+                                        <Table.Td
+                                            align={"center"}>{(255 * (species.hatch_counter + 1)).toLocaleString()}</Table.Td>
+                                        <Table.Td align={"center"}>{exp.toLocaleString()}</Table.Td>
                                         <Table.Td align={"center"}>{species.capture_rate}</Table.Td>
                                     </Table.Tr>
                                 </Table.Tbody>

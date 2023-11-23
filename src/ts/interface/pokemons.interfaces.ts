@@ -241,6 +241,21 @@ export interface IPokemonSpecies {
     }
 }
 
+export interface IPokemonGrowthRate {
+    descriptions: {
+        description: string;
+        language: IPokemon;
+    }[];
+    formula: string;
+    id: number;
+    levels: {
+        experience: number;
+        level: number;
+    }[];
+    name: string;
+    pokemon_species: IPokemon[];
+}
+
 interface IPokemonSprite {
     back_default?: string | null;
     back_female?: string | null;
@@ -265,7 +280,7 @@ export interface IPokemonType {
 export interface IPokemonAbility {
     slot: number;
     is_hidden: boolean;
-    ability:{
+    ability: {
         name: string;
         url: string;
     };

@@ -1,5 +1,5 @@
 import {useNavigate} from "react-router-dom";
-import {Flex, Stack, Text, UnstyledButton} from "@mantine/core";
+import {Flex, Image, Stack, Text, UnstyledButton} from "@mantine/core";
 
 interface IProps {
     id: string | number;
@@ -13,9 +13,10 @@ function PrevNextBtn({id, name, current}: IProps) {
     return (
         <UnstyledButton onClick={() => navigate(`/${id}`)}>
             <Flex align={"center"}>
-                <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`}
+                <Image src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`}
                      alt={name}
-                     placeholder={`https://placehold.co/100x100?text=${name}`}
+                     fallbackSrc={`https://placehold.co/100x100?text=${name}`}
+                     loading={"lazy"}
                 />
                 <Stack gap={"0.5rem"}>
                     <Text size={"0.8rem"} fw={current ? "bold" : "normal"}>No. {id}</Text>

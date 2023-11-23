@@ -30,3 +30,9 @@ export const getPokemonEggGroup = async (data: string | number) => {
         .then(res => res.data)
         .catch(e => console.error(e));
 }
+
+export const getPokemonGrowthRate = async (data: string | number) => {
+    return await axios.get(`https://pokeapi.co/api/v2/growth-rate/${data}`)
+        .then(res => res.data)
+        .catch(e => console.error(e));
+}

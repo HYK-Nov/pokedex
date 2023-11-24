@@ -3,7 +3,7 @@ import {useEffect, useState} from "react";
 import {TYPE_KO} from "../../ts/types/pokemons.types.ts";
 
 function Type() {
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
     const [types, setTypes] = useState<string[]>([]);
 
     useEffect(() => {

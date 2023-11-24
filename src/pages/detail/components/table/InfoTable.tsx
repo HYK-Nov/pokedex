@@ -5,6 +5,7 @@ import {useRecoilValue} from "recoil";
 import {languageState} from "../../../../contexts/language.ts";
 import {useEffect, useState} from "react";
 import {useFetch} from "../../../../hooks/useFetch.ts";
+import {isMobile} from "../../../../hooks/useCheckDevice.ts";
 
 interface IProps {
     detail: IPokemonDetail;
@@ -12,6 +13,7 @@ interface IProps {
 }
 
 function InfoTable({detail, species}: IProps) {
+    const mobile = isMobile();
     const language = useRecoilValue(languageState);
     const [genus, setGenus] = useState("");
 
@@ -52,13 +54,25 @@ function InfoTable({detail, species}: IProps) {
                 </Table.Tr>
                 <Table.Tr>
                     <Table.Th w={"20%"}>분류</Table.Th>
-                    <Table.Td>{genus}</Table.Td>
+                    <Table.Td colSpan={mobile ? 3 : 1}>{genus}</Table.Td>
 
-                    <Table.Th w={"20%"}>타입</Table.Th>
-                    <Table.Td>
-                        <TypeBtn types={detail.types}/>
-                    </Table.Td>
+                    {!mobile &&
+                        <>
+                            <Table.Th w={"20%"}>타입</Table.Th>
+                            <Table.Td>
+                                <TypeBtn types={detail.types}/>
+                            </Table.Td>
+                        </>
+                    }
                 </Table.Tr>
+                {mobile &&
+                    <Table.Tr>
+                        <Table.Th w={"20%"}>타입</Table.Th>
+                        <Table.Td colSpan={2}>
+                            <TypeBtn types={detail.types}/>
+                        </Table.Td>
+                    </Table.Tr>
+                }
                 <Table.Tr>
                     <Table.Th>키</Table.Th>
                     <Table.Td>{(detail.height / 10).toFixed(1)}m</Table.Td>

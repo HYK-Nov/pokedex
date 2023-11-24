@@ -1,6 +1,6 @@
 import {atom} from "recoil";
 
 export const lastIdState = atom({
-    key: "lastIdState",
+    key: "lastId",
     default: 1017,
 })

@@ -5,7 +5,7 @@ import SearchBox from "./header/SearchBox.tsx";
 function Header() {
     const navigate = useNavigate();
     return (
-        <Box bg={"red"} h={"55px"}>
+        <Box bg={"red"} h={"55px"} style={{position: "sticky", top: 0}}>
             <Flex h={"100%"} align={"center"}>
                 <Container w={"100%"}>
                     <Group justify={"space-between"}>
@@ -16,7 +16,7 @@ function Header() {
                                     <Button>도감</Button>
                                 </Menu.Target>
                                 <Menu.Dropdown>
-                                    <Menu.Item onClick={() => navigate("/type")}>타입</Menu.Item>
+                                    <Menu.Item onClick={() => navigate("/category")}>타입</Menu.Item>
                                 </Menu.Dropdown>
                             </Menu>
                         </div>

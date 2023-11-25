@@ -3,25 +3,27 @@ import {IPokemon} from "../../ts/interface/pokemons.interfaces.ts";
 import {getPokemonList} from "../../services/fetchPokemon.ts";
 import {useInfiniteScroll} from "../../hooks/useInfiniteScroll.ts";
 import PokemonList from "./components/PokemonList.tsx";
-import {useRecoilValue} from "recoil";
+import {useRecoilValue, useSetRecoilState} from "recoil";
 import {lastIdState} from "../../contexts/lastId.ts";
 import {Loader, Stack} from "@mantine/core";
+import {loadingState} from "../../contexts/loading.ts";
 
 function Main() {
     const lastId = useRecoilValue(lastIdState);
+    const setLoadingOverlay = useSetRecoilState(loadingState);
+    const [data, setData] = useState<IPokemon[]>([]);
     const [offset, setOffset] = useState(0);
-    const [DATA, setDATA] = useState<IPokemon[]>([]);
     const [hasNextPage, setHasNextPage] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const ref = useInfiniteScroll(async (entry, observer) => {
         observer.unobserve(entry.target);
-        if (!loading && hasNextPage) {
+        if (!loading && hasNextPage && entry.isIntersecting) {
             try {
                 setLoading(true);
                 const res = await getPokemonList(offset);
 
-                setDATA(prev => [...prev, ...res.results]);
+                setData(prev => [...prev, ...res.results]);
                 if (!res.next || offset >= lastId) {
                     setHasNextPage(false);
                 } else {
@@ -33,22 +35,26 @@ function Main() {
                 setLoading(false);
             }
         }
-    })
+    });
 
     useEffect(() => {
-        getPokemonList(0)
-            .then(res => {
-                if (res.next) {
-                    setHasNextPage(true);
-                    setOffset(prev => prev + 30);
-                }
-                setDATA(res.results);
-            });
+        if (data.length === 0) {
+            setLoadingOverlay(true);
+            getPokemonList(0)
+                .then(res => {
+                    if (res.next) {
+                        setHasNextPage(true);
+                        setOffset(prev => prev + 30);
+                    }
+                    setData(res.results);
+                })
+                .finally(() => setTimeout(() => setLoadingOverlay(false), 1000));
+        }
     }, []);
 
     return (
         <Stack gap={"1.5rem"} align={"center"}>
-            <PokemonList data={DATA}/>
+            <PokemonList data={data}/>
             {loading && <Loader/>}
             <div ref={ref} style={{height: "1px"}}/>
         </Stack>

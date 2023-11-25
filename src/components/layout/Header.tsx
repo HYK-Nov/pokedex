@@ -1,6 +1,7 @@
-import {Box, Button, Container, Flex, Group, Menu} from "@mantine/core";
+import {Box, Button, Container, Flex, Group, Menu, UnstyledButton} from "@mantine/core";
 import {useNavigate} from "react-router-dom";
 import SearchBox from "./header/SearchBox.tsx";
+import style from "../../styles/Header.module.scss";
 
 function Header() {
     const navigate = useNavigate();
@@ -10,7 +11,9 @@ function Header() {
                 <Container w={"100%"}>
                     <Group justify={"space-between"}>
                         <div>
-                            <Button onClick={() => navigate("/")}>Pokedex</Button>
+                            <UnstyledButton onClick={() => navigate("/")}>
+                                <b className={`${style.logo}`}>포켓몬 도감</b>
+                            </UnstyledButton>
                             <Menu trigger={"hover"}>
                                 <Menu.Target>
                                     <Button>도감</Button>

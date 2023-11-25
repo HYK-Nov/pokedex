@@ -17,21 +17,26 @@ function Main() {
     const ref = useInfiniteScroll(async (entry, observer) => {
         observer.unobserve(entry.target);
         if (!loading && hasNextPage) {
-            setLoading(true);
-            getPokemonList(offset)
-                .then(res => {
-                    setDATA(prev => [...prev, ...res.results]);
+            try {
+                setLoading(true);
+                const res = await getPokemonList(offset);
 
-                    (!res.next || offset >= lastId) ?
-                        setHasNextPage(false) :
-                        setOffset(prev => prev + 30);
-                })
-                .finally(() => setLoading(false));
+                setDATA(prev => [...prev, ...res.results]);
+                if (!res.next || offset >= lastId) {
+                    setHasNextPage(false);
+                } else {
+                    setOffset(prev => prev + 30);
+                }
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setLoading(false);
+            }
         }
     })
 
     useEffect(() => {
-        getPokemonList(offset)
+        getPokemonList(0)
             .then(res => {
                 if (res.next) {
                     setHasNextPage(true);

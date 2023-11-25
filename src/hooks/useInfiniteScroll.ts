@@ -15,7 +15,7 @@ export const useInfiniteScroll = (
             entries.forEach((entry) => {
                 if (entry.isIntersecting) onIntersect(entry, observer)
             })
-        },[onIntersect]
+        }, [onIntersect]
     )
 
     useEffect(() => {
@@ -23,7 +23,7 @@ export const useInfiniteScroll = (
         const observer = new IntersectionObserver(callback, options)
         observer.observe(ref.current);
         return () => observer.disconnect();
-    }, [ref, options, callback]);
+    }, [options, callback]);
 
     return ref;
 };

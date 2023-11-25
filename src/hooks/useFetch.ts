@@ -8,9 +8,11 @@ import {
 import {useRecoilValue} from "recoil";
 import {languageState} from "../contexts/language.ts";
 import {IPokemon, IPokemonAbility, IPokemonSpecies} from "../ts/interface/pokemons.interfaces.ts";
+import {lastIdState} from "../contexts/lastId.ts";
 
 export function useFetch() {
     const language = useRecoilValue(languageState);
+    const lastId = useRecoilValue(lastIdState);
 
     const findId = async (data: string | number) => {
         try {
@@ -34,6 +36,28 @@ export function useFetch() {
         }
     }
 
+    const findNameList = async () => {
+        try {
+            const names = await Promise.all(
+                Array.from({ length: lastId }, async (_, i) => {
+                    let name = await findName(i+1);
+
+                    // name이 undefined면 다시 받아오기
+                    while (!name){
+                        name = await findName(i+1);
+                    }
+
+                    return name;
+                })
+            );
+
+            return names.map((name, idx) => ({ value: `${idx + 1}`, label: `${name}` }));
+        } catch (e) {
+            console.error(e);
+            throw e;
+        }
+    }
+
     const findGenus = async (data: IPokemonSpecies) => {
         return data.genera.find((item) => item.language.name === language)?.genus;
     }
@@ -42,14 +66,18 @@ export function useFetch() {
         try {
             const promises = data.map(async (item) => {
                 const res = await getPokemonAbility(item.ability.url.split("/")[6]);
-                const flavor_text = res.flavor_text_entries.findLast((entry: { language: { name: string; }; }) => entry.language.name === language);
-                const name = res.names.find((item: { language: { name: string; }; }) => item.language.name === language);
+                const flavor_text = res.flavor_text_entries.findLast((entry: {
+                    language: { name: string; };
+                }) => entry.language.name === language);
+                const name = res.names.find((item: {
+                    language: { name: string; };
+                }) => item.language.name === language);
 
                 return {flavor_text, name};
             });
 
             return await Promise.all(promises);
-        }catch (e) {
+        } catch (e) {
             console.error(e);
             return [];
         }
@@ -65,7 +93,7 @@ export function useFetch() {
             });
 
             return await Promise.all(promises);
-        }catch (e) {
+        } catch (e) {
             console.error(e);
             return [];
         }
@@ -75,7 +103,7 @@ export function useFetch() {
         try {
             const res = await getPokemonGrowthRate(data.url.split("/")[6]);
             return res.levels.pop().experience;
-        }catch (e) {
+        } catch (e) {
             console.error(e);
         }
     }
@@ -97,5 +125,5 @@ export function useFetch() {
         }
     }
 
-    return {findName, findArtwork, findTypes, findId, findFlavorTexts, findGenus, findAbilities, findEggGroups, findExp}
+    return {findName, findArtwork, findTypes, findId, findFlavorTexts, findGenus, findAbilities, findEggGroups, findExp, findNameList}
 }

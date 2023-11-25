@@ -39,7 +39,7 @@ function SearchBox() {
         if (ref.current) {
             ref.current.blur();
         }
-        navigate(`/pokedex/${id}`);
+        navigate(`/${id}`);
     }
 
     useEffect(() => {

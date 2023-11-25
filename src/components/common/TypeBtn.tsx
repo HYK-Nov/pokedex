@@ -17,7 +17,7 @@ function TypeBtn({types}: { types: IPokemonType[] }) {
                    style={{cursor: "pointer"}}
                    onClick={(e) => {
                        e.stopPropagation();
-                       navigate(`/pokedex/type?type=${types[0].type.name}`);
+                       navigate(`/type?type=${types[0].type.name}`);
                    }}>
                 {language === "ko" ? TYPE_KO[types[0].type.name] : types[0].type.name}
             </Badge>
@@ -28,7 +28,7 @@ function TypeBtn({types}: { types: IPokemonType[] }) {
                        style={{cursor: "pointer"}}
                        onClick={(e) => {
                            e.stopPropagation();
-                           navigate(`/pokedex/type?type=${types[1].type.name}`);
+                           navigate(`/type?type=${types[1].type.name}`);
                        }}>
                     {language === "ko" ? TYPE_KO[types[1].type.name] : types[1].type.name}
                 </Badge>}

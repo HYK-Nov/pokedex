@@ -10,13 +10,13 @@ function Header() {
                 <Container w={"100%"}>
                     <Group justify={"space-between"}>
                         <div>
-                            <Button onClick={() => navigate("/pokedex")}>Pokedex</Button>
+                            <Button onClick={() => navigate("/")}>Pokedex</Button>
                             <Menu trigger={"hover"}>
                                 <Menu.Target>
                                     <Button>도감</Button>
                                 </Menu.Target>
                                 <Menu.Dropdown>
-                                    <Menu.Item onClick={() => navigate("/pokedex/type")}>타입</Menu.Item>
+                                    <Menu.Item onClick={() => navigate("/type")}>타입</Menu.Item>
                                 </Menu.Dropdown>
                             </Menu>
                         </div>

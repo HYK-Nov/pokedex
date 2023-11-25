@@ -1,6 +1,6 @@
 # 포켓몬 도감
 
-https://hyk-nov.github.io/pokedex
+https://pokedex-ef73d.web.app/
 
 - Typescript
 - Mantine

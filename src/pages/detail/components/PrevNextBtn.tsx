@@ -13,7 +13,7 @@ function PrevNextBtn({id, name, current}: IProps) {
     const mobile = isMobile();
 
     return (
-        <UnstyledButton onClick={() => navigate(`/pokedex/${id}`)}>
+        <UnstyledButton onClick={() => navigate(`/${id}`)}>
             <Grid align={"center"} justify={"center"} grow gutter={"0"}>
                 <Grid.Col span={{base: 12, sm: 6}}>
                     <Image src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`}

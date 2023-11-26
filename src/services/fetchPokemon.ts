@@ -1,5 +1,5 @@
 import axios from "axios";
-import {IPokemonDetail, IPokemonSpecies} from "../ts/interface/pokemons.interfaces.ts";
+import {IPokemonDetail, IPokemonSpecies, IPokemonTypeDetail} from "../ts/interface/pokemons.interfaces.ts";
 
 export const getPokemonDetail = async (data: string | number): Promise<IPokemonDetail> => {
     return await axios.get(`https://pokeapi.co/api/v2/pokemon/${data}`)
@@ -33,6 +33,12 @@ export const getPokemonEggGroup = async (data: string | number) => {
 
 export const getPokemonGrowthRate = async (data: string | number) => {
     return await axios.get(`https://pokeapi.co/api/v2/growth-rate/${data}`)
+        .then(res => res.data)
+        .catch(e => console.error(e));
+}
+
+export const getPokemonType = async (data: string | number):Promise<IPokemonTypeDetail> => {
+    return await axios.get(`https://pokeapi.co/api/v2/type/${data}`)
         .then(res => res.data)
         .catch(e => console.error(e));
 }

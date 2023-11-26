@@ -3,7 +3,7 @@ import Layout from "../components/layout/Layout.tsx";
 import Main from "../pages/main";
 import {loader as detailLoader} from "./detail.ts";
 import Detail from "../pages/detail";
-import Type from "../pages/type";
+import Category from "../pages/category";
 
 export const router = createBrowserRouter([
     {
@@ -20,7 +20,7 @@ export const router = createBrowserRouter([
             },
             {
                 path: "/category",
-                element: <Type/>,
+                element: <Category/>,
             },
         ]
     }

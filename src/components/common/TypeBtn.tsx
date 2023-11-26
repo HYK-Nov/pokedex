@@ -12,7 +12,8 @@ function TypeBtn({types}: { types: IPokemonType[] }) {
     return (
         <SimpleGrid cols={2}>
             <Badge color={TYPE_COLORS[types[0].type?.name]}
-                   radius={"0.3rem"}
+                   radius={"sm"}
+                   h={"1.5rem"}
                    fullWidth
                    style={{cursor: "pointer"}}
                    onClick={(e) => {
@@ -23,10 +24,11 @@ function TypeBtn({types}: { types: IPokemonType[] }) {
             </Badge>
             {types.length > 1 &&
                 <Badge color={TYPE_COLORS[types[1].type?.name]}
-                       radius={"0.3rem"}
+                       radius={"sm"}
+                       h={"1.5rem"}
                        fullWidth
                        style={{cursor: "pointer"}}
-                       onClick={(e) => {
+                       onClick={(e: { stopPropagation: () => void; }) => {
                            e.stopPropagation();
                            navigate(`/category?type=${types[1].type.name}`);
                        }}>

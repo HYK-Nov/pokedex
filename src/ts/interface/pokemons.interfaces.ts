@@ -297,3 +297,32 @@ export interface IPokemonFlavorText {
         url: string;
     };
 }
+
+export interface IPokemonTypeDetail {
+    damage_relations: {
+        double_damage_from: IPokemon[];
+        double_damage_to: IPokemon[];
+        half_damage_from: IPokemon[];
+        half_damage_to: IPokemon[];
+        no_damage_from: IPokemon[];
+        no_damage_to: IPokemon[];
+    };
+    game_indices: {
+        game_index: number;
+        generation: IPokemon;
+    }[];
+    generation: IPokemon;
+    id: number;
+    move_damage_class: IPokemon;
+    moves: IPokemon[];
+    name: string;
+    names: {
+        language: IPokemon;
+        name: string;
+    }[];
+    past_damage_relations: [];
+    pokemon: {
+        pokemon: IPokemon;
+        slot: number;
+    }[];
+}

@@ -3,7 +3,7 @@ import {
     getPokemonDetail,
     getPokemonEggGroup,
     getPokemonGrowthRate,
-    getPokemonSpecies
+    getPokemonSpecies, getPokemonType
 } from "../services/fetchPokemon.ts";
 import {useRecoilValue} from "recoil";
 import {languageState} from "../contexts/language.ts";
@@ -39,19 +39,19 @@ export function useFetch() {
     const findNameList = async () => {
         try {
             const names = await Promise.all(
-                Array.from({ length: lastId }, async (_, i) => {
-                    let name = await findName(i+1);
+                Array.from({length: lastId}, async (_, i) => {
+                    let name = await findName(i + 1);
 
                     // name이 undefined면 다시 받아오기
-                    while (!name){
-                        name = await findName(i+1);
+                    while (!name) {
+                        name = await findName(i + 1);
                     }
 
                     return name;
                 })
             );
 
-            return names.map((name, idx) => ({ value: `${idx + 1}`, label: `${name}` }));
+            return names.map((name, idx) => ({value: `${idx + 1}`, label: `${name}`}));
         } catch (e) {
             console.error(e);
             throw e;
@@ -125,5 +125,28 @@ export function useFetch() {
         }
     }
 
-    return {findName, findArtwork, findTypes, findId, findFlavorTexts, findGenus, findAbilities, findEggGroups, findExp, findNameList}
+    const findMatchType = async (data: string | number) => {
+        try {
+            const res = await getPokemonType(data);
+            return res.pokemon.filter((item) => Number(item.pokemon.url.split("/")[6]) <= lastId)
+                .map((item) => item.pokemon);
+        } catch (e) {
+            console.error(e);
+            return [];
+        }
+    }
+
+    return {
+        findName,
+        findArtwork,
+        findTypes,
+        findId,
+        findFlavorTexts,
+        findGenus,
+        findAbilities,
+        findEggGroups,
+        findExp,
+        findNameList,
+        findMatchType
+    }
 }

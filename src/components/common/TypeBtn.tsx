@@ -4,6 +4,7 @@ import {IPokemonType} from "../../ts/interface/pokemons.interfaces.ts";
 import {useNavigate} from "react-router-dom";
 import {useRecoilValue} from "recoil";
 import {languageState} from "../../contexts/language.ts";
+import TypeIcon from "../TypeIcon.tsx";
 
 function TypeBtn({types}: { types: IPokemonType[] }) {
     const navigate = useNavigate();
@@ -15,6 +16,7 @@ function TypeBtn({types}: { types: IPokemonType[] }) {
                    radius={"sm"}
                    h={"1.5rem"}
                    fullWidth
+                   leftSection={<TypeIcon type={types[0].type.name} height={"1rem"}/>}
                    style={{cursor: "pointer"}}
                    onClick={(e) => {
                        e.stopPropagation();
@@ -27,6 +29,7 @@ function TypeBtn({types}: { types: IPokemonType[] }) {
                        radius={"sm"}
                        h={"1.5rem"}
                        fullWidth
+                       leftSection={<TypeIcon type={types[1].type.name} height={"1rem"}/>}
                        style={{cursor: "pointer"}}
                        onClick={(e: { stopPropagation: () => void; }) => {
                            e.stopPropagation();

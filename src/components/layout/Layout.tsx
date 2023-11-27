@@ -1,16 +1,22 @@
 import {Container} from "@mantine/core";
-import {Outlet} from "react-router-dom";
+import {Outlet, useLocation} from "react-router-dom";
 import Header from "./Header.tsx";
 import ScrollToTopBtn from "../common/ScrollToTopBtn.tsx";
 import LoadingOverlay from "../common/LoadingOverlay.tsx";
 import {useEffect} from "react";
 
 function Layout() {
+    const {search} = useLocation();
+
     useEffect(() => {
         window.onbeforeunload = () => {
             window.scrollTo(0, 0);
         }
     }, []);
+
+    useEffect(() => {
+        window.scrollTo({top: 0, behavior: "smooth"});
+    }, [search]);
 
     return (
         <>

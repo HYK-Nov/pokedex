@@ -1,4 +1,4 @@
-import TypeBtn from "../../../../components/common/TypeBtn.tsx";
+import TypeBtn from "../../../../components/common/TypeSetBtn.tsx";
 import {Group, Table, Text, Title} from "@mantine/core";
 import {IPokemonDetail, IPokemonSpecies} from "../../../../ts/interface/pokemons.interfaces.ts";
 import {useRecoilValue} from "recoil";

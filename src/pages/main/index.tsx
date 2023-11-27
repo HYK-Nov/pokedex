@@ -1,4 +1,4 @@
-import {useLayoutEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {IPokemon} from "../../ts/interface/pokemons.interfaces.ts";
 import {getPokemonList} from "../../services/fetchPokemon.ts";
 import {useInfiniteScroll} from "../../hooks/useInfiniteScroll.ts";
@@ -37,7 +37,7 @@ function Main() {
         }
     });
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         if (data.length === 0) {
             setLoadingOverlay(true);
             getPokemonList(0)

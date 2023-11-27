@@ -1,13 +1,17 @@
 import {useSearchParams} from "react-router-dom";
-import {useEffect, useLayoutEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {useFetch} from "../../hooks/useFetch.ts";
 import {IPokemon} from "../../ts/interface/pokemons.interfaces.ts";
 import PokemonList from "../main/components/PokemonList.tsx";
-import {useSetRecoilState} from "recoil";
-import {loadingState} from "../../contexts/loading.ts";
+import TypeBtn from "../../components/common/TypeBtn.tsx";
+import {Box, SimpleGrid} from "@mantine/core";
+
+const TYPE = ["normal", "fire", "water", "grass", "flying",
+    "fighting", "poison", "electric", "ground", "rock",
+    "psychic", "ice", "bug", "ghost", "steel",
+    "dragon", "dark", "fairy"];
 
 function Category() {
-    const setLoadingOverlay = useSetRecoilState(loadingState);
     const [searchParams] = useSearchParams();
     const [types, setTypes] = useState<string[]>([]);
     const [data, setData] = useState<IPokemon[]>([]);
@@ -28,24 +32,27 @@ function Category() {
                         throw Error;
                     }
                     setData(res);
-                })
-                .finally(() => setTimeout(() => setLoadingOverlay(false), 1000));
+                });
         } else if (types.length === 2) {
             Promise.all([findMatchType(types[0]), findMatchType(types[1])])
                 .then(([res1, res2]) => {
                     const intersection = res1.filter((v1) => res2.find((v2) => v1.name === v2.name));
                     setData(intersection);
-                })
-                .finally(() => setTimeout(() => setLoadingOverlay(false), 1000));
+                });
         }
     }, [types]);
 
-    useLayoutEffect(() => {
-        setLoadingOverlay(true);
-    }, [])
+    const typeItems = TYPE.map((item) => (
+        <TypeBtn type={item} disabled={!types.includes(item)}/>
+    ));
 
     return (
         <>
+            <Box bg={"white"}>
+                <SimpleGrid cols={{base: 3, sm: 5}} mb={"2rem"}>
+                    {typeItems}
+                </SimpleGrid>
+            </Box>
             {data.length > 0 && <PokemonList data={data}/>}
         </>
     );

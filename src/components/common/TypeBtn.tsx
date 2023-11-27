@@ -1,43 +1,43 @@
 import {TYPE_COLORS, TYPE_KO} from "../../ts/types/pokemons.types.ts";
-import {Badge, SimpleGrid} from "@mantine/core";
-import {IPokemonType} from "../../ts/interface/pokemons.interfaces.ts";
-import {useNavigate} from "react-router-dom";
+import TypeIcon from "../TypeIcon.tsx";
+import {Badge} from "@mantine/core";
 import {useRecoilValue} from "recoil";
 import {languageState} from "../../contexts/language.ts";
-import TypeIcon from "../TypeIcon.tsx";
+import React from "react";
 
-function TypeBtn({types}: { types: IPokemonType[] }) {
-    const navigate = useNavigate();
+interface IProps {
+    type: string;
+    disabled?: boolean;
+    onClick?: (e: React.MouseEvent | null) => void;
+}
+
+function TypeBtn({type, disabled, onClick}: IProps) {
     const language = useRecoilValue(languageState);
 
     return (
-        <SimpleGrid cols={2}>
-            <Badge color={TYPE_COLORS[types[0].type?.name]}
-                   radius={"sm"}
-                   h={"1.5rem"}
-                   fullWidth
-                   leftSection={<TypeIcon type={types[0].type.name} height={"1rem"}/>}
-                   style={{cursor: "pointer"}}
-                   onClick={(e) => {
-                       e.stopPropagation();
-                       navigate(`/category?type=${types[0].type.name}`);
-                   }}>
-                {language === "ko" ? TYPE_KO[types[0].type.name] : types[0].type.name}
-            </Badge>
-            {types.length > 1 &&
-                <Badge color={TYPE_COLORS[types[1].type?.name]}
+        <>
+            {!disabled ?
+                <Badge color={TYPE_COLORS[type]}
                        radius={"sm"}
                        h={"1.5rem"}
                        fullWidth
-                       leftSection={<TypeIcon type={types[1].type.name} height={"1rem"}/>}
+                       leftSection={<TypeIcon type={type} height={"1rem"}/>}
                        style={{cursor: "pointer"}}
-                       onClick={(e: { stopPropagation: () => void; }) => {
-                           e.stopPropagation();
-                           navigate(`/category?type=${types[1].type.name}`);
-                       }}>
-                    {language === "ko" ? TYPE_KO[types[1].type.name] : types[1].type.name}
-                </Badge>}
-        </SimpleGrid>
+                       onClick={onClick}
+                >
+                    {language === "ko" ? TYPE_KO[type] : type}
+                </Badge> :
+                <Badge color={"#bfbfbf"}
+                       radius={"sm"}
+                       h={"1.5rem"}
+                       fullWidth
+                       leftSection={<TypeIcon type={type} height={"1rem"}/>}
+                       style={{cursor: "pointer"}}
+                       onClick={onClick}>
+                    {language === "ko" ? TYPE_KO[type] : type}
+                </Badge>
+            }
+        </>
     );
 }
 

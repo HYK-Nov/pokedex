@@ -5,7 +5,7 @@ import {IPokemon, IPokemonType} from "../../../ts/interface/pokemons.interfaces.
 import {useFetch} from "../../../hooks/useFetch.ts";
 import {useRecoilValue} from "recoil";
 import {lastIdState} from "../../../contexts/lastId.ts";
-import TypeBtn from "../../../components/common/TypeBtn.tsx";
+import TypeBtn from "../../../components/common/TypeSetBtn.tsx";
 
 function PokemonBtn({data}: { data: IPokemon }) {
     const navigate = useNavigate();

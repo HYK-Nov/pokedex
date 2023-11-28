@@ -1,4 +1,4 @@
-import {Box, Button, Container, Flex, Menu, Switch, UnstyledButton} from "@mantine/core";
+import {Box, Container, Flex, Switch, UnstyledButton} from "@mantine/core";
 import {useNavigate} from "react-router-dom";
 import SearchBox from "./header/SearchBox.tsx";
 import style from "../../styles/Header.module.scss";
@@ -17,14 +17,9 @@ function Header() {
                             <UnstyledButton onClick={() => navigate("/")}>
                                 <b className={`${style.logo}`}>{language === "ko" ? "포켓몬 도감" : "Pokedex"}</b>
                             </UnstyledButton>
-                            <Menu trigger={"hover"}>
-                                <Menu.Target>
-                                    <Button>도감</Button>
-                                </Menu.Target>
-                                <Menu.Dropdown>
-                                    <Menu.Item onClick={() => navigate("/category")}>타입</Menu.Item>
-                                </Menu.Dropdown>
-                            </Menu>
+                            <UnstyledButton onClick={() => navigate("/category")}>
+                                <b className={`${style.menuItem}`}>{language === "ko" ? "카테고리" : "Category"}</b>
+                            </UnstyledButton>
                         </div>
                         <div style={{display: "flex", alignItems: "center", gap: "1rem"}}>
                             <Switch defaultChecked size={"lg"} onLabel={"한국어"} offLabel={"Eng"}/>

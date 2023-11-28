@@ -11,7 +11,7 @@ function LoadingOverlay() {
             {loading &&
                 <div style={{
                     backgroundColor: theme.colors.red[6],
-                    height: "100vh",
+                    height: window.innerHeight,
                     width: window.innerWidth,
                     position: "fixed",
                     display: "flex",

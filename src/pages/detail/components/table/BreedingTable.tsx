@@ -43,7 +43,7 @@ function BreedingTable({species}: { species: IPokemonSpecies }) {
                         {species.gender_rate !== -1 && (8 - species.gender_rate) / 8 * 100 < 100 &&
                             <>수컷: {(8 - species.gender_rate) / 8 * 100}%<br/></>}
                         {species.gender_rate !== -1 && species.gender_rate / 8 * 100 < 100 && `암컷: ${species.gender_rate / 8 * 100}%`}
-                        {species.gender_rate === -1 && `없음`}
+                        {species.gender_rate === -1 && "없음"}
                     </Table.Td>
 
                     {/* 알 그룹 */}
@@ -58,11 +58,11 @@ function BreedingTable({species}: { species: IPokemonSpecies }) {
 
                     {/* 최대 경험치량 */}
                     <Table.Td align={"center"}>
-                        <p style={{wordBreak:"break-word"}}>{exp.toLocaleString()}</p>
+                        <p style={{wordBreak: "break-word"}}>{exp.toLocaleString()}</p>
                     </Table.Td>
 
                     {/* 포획률 */}
-                    <Table.Td align={"center"}>{species.capture_rate}</Table.Td>
+                    <Table.Td align={"center"}>{((species.capture_rate / 256) * 100).toFixed(1)}%</Table.Td>
                 </Table.Tr>
             </Table.Tbody>
         </Table>

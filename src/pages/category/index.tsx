@@ -2,16 +2,17 @@ import {Outlet, useNavigate, useSearchParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {useFetch} from "../../hooks/useFetch.ts";
 import {IPokemon} from "../../ts/interface/pokemons.interfaces.ts";
-import PokemonList from "../main/components/PokemonList.tsx";
+import PokemonList from "../../components/common/PokemonList.tsx";
 import {Box, Button, SimpleGrid} from "@mantine/core";
-import {useSetRecoilState} from "recoil";
+import {useRecoilState} from "recoil";
 import {loadingState} from "../../contexts/loading.ts";
 import TypeSelect from "./components/TypeSelect.tsx";
+import LoadingSkeleton from "../../components/common/LoadingSkeleton.tsx";
 
 
 function Category() {
     const navigate = useNavigate();
-    const setLoadingOverlay = useSetRecoilState(loadingState);
+    const [skeleton, setSkeleton] = useRecoilState(loadingState);
     const [searchParams] = useSearchParams();
     const [types, setTypes] = useState<string[]>([]);
     const [data, setData] = useState<IPokemon[]>([]);
@@ -20,7 +21,7 @@ function Category() {
     const {findMatchType} = useFetch();
     const searchTypes = async (types: string[]) => {
         try {
-            setLoadingOverlay(true);
+            setSkeleton(true);
             findMatchType(types)
                 .then((res) => {
                     if (res) {
@@ -31,7 +32,7 @@ function Category() {
             console.error(error);
         } finally {
             setTimeout(() => {
-                setLoadingOverlay(false);
+                setSkeleton(false);
             }, 1000);
         }
     };
@@ -84,7 +85,8 @@ function Category() {
                         onClick={() => navigate(`/category${generateParams(types)}`)}>검색</Button>
                 </SimpleGrid>
             </Box>
-            {data.length > 0 && <PokemonList data={data}/>}
+            {(skeleton && searchParams.size > 0) && <LoadingSkeleton/>}
+            {(!skeleton && data.length > 0) && <PokemonList data={data}/>}
             <Outlet/>
         </>
     );

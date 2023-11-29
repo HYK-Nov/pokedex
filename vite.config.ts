@@ -7,13 +7,8 @@ export default defineConfig({
     plugins: [react(), svgr()],
     server: {
         port: 3000,
-        proxy: {
-            "/pokeapi": {
-                target: "https://pokeapi.co/api/v2",
-                changeOrigin: true,
-                rewrite: path => path.replace(/^\/pokeapi/, ""),
-                secure: false,
-            }
-        }
+        // proxy: {
+        //     '/v2': 'https://pokeapi.co/api',
+        // }
     },
 })

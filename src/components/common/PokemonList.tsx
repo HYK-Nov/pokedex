@@ -1,7 +1,7 @@
 import {useMemo} from "react";
 import {SimpleGrid} from "@mantine/core";
-import {IPokemon} from "../../../ts/interface/pokemons.interfaces.ts";
-import PokemonBtn from "./PokemonBtn.tsx";
+import {IPokemon} from "../../ts/interface/pokemons.interfaces.ts";
+import PokemonBtn from "../../pages/main/components/PokemonBtn.tsx";
 
 function PokemonList({data}: { data: IPokemon[] }) {
     const items = useMemo(() => {

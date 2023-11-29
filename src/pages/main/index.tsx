@@ -3,14 +3,14 @@ import {IPokemon} from "../../ts/interface/pokemons.interfaces.ts";
 import {getPokemonList} from "../../services/fetchPokemon.ts";
 import {useInfiniteScroll} from "../../hooks/useInfiniteScroll.ts";
 import PokemonList from "./components/PokemonList.tsx";
-import {useRecoilValue, useSetRecoilState} from "recoil";
+import {useRecoilState, useRecoilValue} from "recoil";
 import {lastIdState} from "../../contexts/lastId.ts";
 import {Loader, Stack} from "@mantine/core";
 import {loadingState} from "../../contexts/loading.ts";
 
 function Main() {
     const lastId = useRecoilValue(lastIdState);
-    const setLoadingOverlay = useSetRecoilState(loadingState);
+    const [_, setLoadingOverlay] = useRecoilState(loadingState);
     const [data, setData] = useState<IPokemon[]>([]);
     const [offset, setOffset] = useState(0);
     const [hasNextPage, setHasNextPage] = useState(false);
@@ -38,25 +38,23 @@ function Main() {
     });
 
     useEffect(() => {
-        if (data.length === 0) {
-            setLoadingOverlay(true);
-            getPokemonList(0)
-                .then(res => {
-                    if (res.next) {
-                        setHasNextPage(true);
-                        setOffset(prev => prev + 30);
-                    }
-                    setData(res.results);
-                })
-                .finally(() => setTimeout(() => setLoadingOverlay(false), 1000));
-        }
+        setLoadingOverlay(true);
+        getPokemonList(0)
+            .then(res => {
+                if (res.next) {
+                    setHasNextPage(true);
+                    setOffset(prev => prev + 30);
+                }
+                setData(res.results);
+            })
+            .finally(() => setTimeout(() => setLoadingOverlay(false), 1000));
     }, []);
 
     return (
         <Stack gap={"1.5rem"} align={"center"}>
             <PokemonList data={data}/>
             {loading && <Loader/>}
-            <div ref={ref} style={{height: "1px"}}/>
+            {data && <div ref={ref} style={{height: "1px"}}/>}
         </Stack>
     );
 }

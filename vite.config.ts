@@ -8,10 +8,11 @@ export default defineConfig({
     server: {
         port: 3000,
         proxy: {
-            "/pokeapi":{
+            "/pokeapi": {
                 target: "https://pokeapi.co/api/v2",
                 changeOrigin: true,
                 rewrite: path => path.replace(/^\/pokeapi/, ""),
+                secure: false,
             }
         }
     },

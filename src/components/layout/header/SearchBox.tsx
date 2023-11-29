@@ -18,20 +18,9 @@ function SearchBox() {
 
     const {findNameList} = useFetch();
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const res = await findNameList();
-                setData(res);
-            } catch (e) {
-                console.error(e);
-            }
-        }
-
-        // 최초 렌더링 시에만 데이터 가져오기
-        if (!data.length) {
-            fetchData();
-        }
-    }, [data, findNameList]);
+        findNameList()
+            .then((res) => setData(res));
+    }, []);
 
     const handleOptionSubmit = (id: string) => {
         setValue(null);

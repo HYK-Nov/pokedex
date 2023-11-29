@@ -1,4 +1,4 @@
-import {useNavigate, useSearchParams} from "react-router-dom";
+import {Outlet, useNavigate, useSearchParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {useFetch} from "../../hooks/useFetch.ts";
 import {IPokemon} from "../../ts/interface/pokemons.interfaces.ts";
@@ -18,30 +18,21 @@ function Category() {
     const [shouldUpdateData, setShouldUpdateData] = useState(true);
 
     const {findMatchType} = useFetch();
-    const searchTypes = async () => {
+    const searchTypes = async (types: string[]) => {
         try {
-            if (types.length === 1) {
-                setLoadingOverlay(true);
-
-                const res = await findMatchType(types[0]);
-                if (res.length === 0) {
-                    throw Error;
-                }
-
-                setData(res);
-            } else if (types.length === 2) {
-                setLoadingOverlay(true);
-
-                const [res1, res2] = await Promise.all([findMatchType(types[0]), findMatchType(types[1])]);
-                const intersection = res1.filter((v1) => res2.find((v2) => v1.name === v2.name));
-                setData(intersection);
-            }
+            setLoadingOverlay(true);
+            findMatchType(types)
+                .then((res) => {
+                    if (res) {
+                        setData(res);
+                    }
+                });
         } catch (error) {
             console.error(error);
         } finally {
             setTimeout(() => {
                 setLoadingOverlay(false);
-            }, 500);
+            }, 1000);
         }
     };
 
@@ -59,6 +50,11 @@ function Category() {
         }
     }
 
+    const handleResetClick = () => {
+        setShouldUpdateData(false);
+        setTypes([]);
+    }
+
     useEffect(() => {
         const params = searchParams.get("type");
         setShouldUpdateData(true);
@@ -74,24 +70,22 @@ function Category() {
 
     useEffect(() => {
         if (shouldUpdateData) {
-            searchTypes();
+            searchTypes(types);
         }
-    }, [shouldUpdateData, types]);
+    }, [types]);
 
     return (
         <>
             <Box bg={"white"}>
                 <TypeSelect types={types} onClick={handleTypeClick}/>
                 <SimpleGrid cols={2} mb={"2rem"}>
-                    <Button variant={"outline"} color={"#aaaaaa"} onClick={() => {
-                        setTypes([]);
-                        setData([]);
-                    }}>초기화</Button>
+                    <Button variant={"outline"} color={"#aaaaaa"} onClick={handleResetClick}>초기화</Button>
                     <Button
                         onClick={() => navigate(`/category${generateParams(types)}`)}>검색</Button>
                 </SimpleGrid>
             </Box>
             {data.length > 0 && <PokemonList data={data}/>}
+            <Outlet/>
         </>
     );
 }

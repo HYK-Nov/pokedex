@@ -30,7 +30,11 @@ export function useFetch() {
     const findName = async (data: string | number) => {
         try {
             const res = await getPokemonSpecies(data);
-            return res.names.find((item) => item.language.name === language)?.name;
+            if (res && res.names) {
+                const result = res.names?.find((item) => item.language.name === language)?.name || "";
+                return result;
+            }
+            return "";
         } catch (e) {
             console.error(e);
         }
@@ -125,11 +129,18 @@ export function useFetch() {
         }
     }
 
-    const findMatchType = async (data: string | number) => {
+    const findMatchType = async (data: string[] | number[]) => {
         try {
-            const res = await getPokemonType(data);
-            return res.pokemon.filter((item) => Number(item.pokemon.url.split("/")[6]) <= lastId)
-                .map((item) => item.pokemon);
+            if (data.length === 1) {
+                const res = await getPokemonType(data[0]);
+                return res.pokemon.filter((item) => Number(item.pokemon.url.split("/")[6]) <= lastId)
+                    .map((item) => item.pokemon);
+            } else if (data.length >= 2) {
+                const [res1, res2] = await Promise.all([getPokemonType(data[0]), getPokemonType(data[1])]);
+                const intersection = res1.pokemon.filter((v1) => res2.pokemon.find((v2) => v1.pokemon.name === v2.pokemon.name));
+
+                return intersection.map((item) => item.pokemon);
+            }
         } catch (e) {
             console.error(e);
             return [];

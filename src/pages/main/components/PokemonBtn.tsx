@@ -17,9 +17,9 @@ function PokemonBtn({data}: { data: IPokemon }) {
 
     const {findArtwork, findName, findTypes} = useFetch();
     useEffect(() => {
-        findName(data.name)
+        findName(id)
             .then(res => setName(res!));
-        findTypes(data.name)
+        findTypes(id)
             .then(res => setTypes(res!));
         setArtwork(findArtwork(id!));
     }, [data]);

@@ -17,7 +17,7 @@ function LoadingOverlay() {
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
-                    zIndex: 10000
+                    zIndex: 1000000
                 }}>
                     <Loader color={"white"} size={"300px"} style={{backgroundColor: "white", borderRadius: "300px"}}/>
                 </div>

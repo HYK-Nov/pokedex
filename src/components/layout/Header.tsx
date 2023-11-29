@@ -9,7 +9,7 @@ function Header() {
     const [language, _] = useRecoilState(languageState);
     const navigate = useNavigate();
     return (
-        <Box bg={"red"} h={"55px"} style={{position: "sticky", top: 0}}>
+        <Box bg={"red"} h={"55px"} style={{position: "sticky", top: 0, zIndex: 99999}}>
             <Flex h={"100%"} align={"center"}>
                 <Container w={"100%"} size={"lg"}>
                     <div style={{display: "flex", justifyContent: "space-between"}}>

@@ -1,11 +1,16 @@
 import axios from "axios";
-import {IPokemonDetail, IPokemonSpecies, IPokemonTypeDetail} from "../ts/interface/pokemons.interfaces.ts";
+import {
+    IPokemonDetail, IPokemonGeneration, IPokemonPokedex,
+    IPokemonRegion,
+    IPokemonSpecies,
+    IPokemonTypeDetail
+} from "../ts/interface/pokemons.interfaces.ts";
 
-const api = "https://pokeapi.co/api";
+const api = "https://pokeapi.co/api/v2";
 
 export const getPokemonDetail = async (data: string | number): Promise<IPokemonDetail> => {
     return await axios({
-        baseURL: `${api}/v2/pokemon/${data}`,
+        baseURL: `${api}/pokemon/${data}`,
         method: "GET",
         responseType: "json",
     })
@@ -15,7 +20,7 @@ export const getPokemonDetail = async (data: string | number): Promise<IPokemonD
 
 export const getPokemonSpecies = async (data: string | number): Promise<IPokemonSpecies> => {
     return await axios({
-        baseURL: `${api}/v2/pokemon-species/${data}`,
+        baseURL: `${api}/pokemon-species/${data}`,
         method: "GET",
         responseType: "json",
     })
@@ -25,7 +30,7 @@ export const getPokemonSpecies = async (data: string | number): Promise<IPokemon
 
 export const getPokemonList = async (offset: number) => {
     return await axios({
-        baseURL: `${api}/v2/pokemon/?limit=30&offset=${offset}/`,
+        baseURL: `${api}/pokemon/?limit=24&offset=${offset}/`,
         method: "GET",
         responseType: "json",
     })
@@ -35,7 +40,7 @@ export const getPokemonList = async (offset: number) => {
 
 export const getPokemonAbility = async (data: string | number) => {
     return await axios({
-        baseURL: `${api}/v2/ability/${data}`,
+        baseURL: `${api}/ability/${data}`,
         method: "GET",
         responseType: "json",
     })
@@ -45,7 +50,7 @@ export const getPokemonAbility = async (data: string | number) => {
 
 export const getPokemonEggGroup = async (data: string | number) => {
     return await axios({
-        baseURL: `${api}/v2/egg-group/${data}`,
+        baseURL: `${api}/egg-group/${data}`,
         method: "GET",
         responseType: "json",
     })
@@ -55,7 +60,7 @@ export const getPokemonEggGroup = async (data: string | number) => {
 
 export const getPokemonGrowthRate = async (data: string | number) => {
     return await axios({
-        baseURL: `${api}/v2/growth-rate/${data}`,
+        baseURL: `${api}/growth-rate/${data}`,
         method: "GET",
         responseType: "json",
     })
@@ -65,7 +70,37 @@ export const getPokemonGrowthRate = async (data: string | number) => {
 
 export const getPokemonType = async (data: string | number): Promise<IPokemonTypeDetail> => {
     return await axios({
-        baseURL: `${api}/v2/type/${data}`,
+        baseURL: `${api}/type/${data}`,
+        method: "GET",
+        responseType: "json",
+    })
+        .then(res => res.data)
+        .catch(e => console.error(e));
+}
+
+export const getPokemonRegion = async (data: string | number): Promise<IPokemonRegion> => {
+    return await axios({
+        baseURL: `${api}/region/${data}`,
+        method: "GET",
+        responseType: "json",
+    })
+        .then(res => res.data)
+        .catch(e => console.error(e));
+}
+
+export const getPokemonGeneration = async (data: string | number): Promise<IPokemonGeneration> => {
+    return await axios({
+        baseURL: `${api}/generation/${data}`,
+        method: "GET",
+        responseType: "json",
+    })
+        .then(res => res.data)
+        .catch(e => console.error(e));
+}
+
+export const getPokemonPokedex = async (data: string | number): Promise<IPokemonPokedex> => {
+    return await axios({
+        baseURL: `${api}/pokedex/${data}`,
         method: "GET",
         responseType: "json",
     })

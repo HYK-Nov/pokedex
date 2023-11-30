@@ -1,8 +1,6 @@
 import {
-    getPokemonAbility,
-    getPokemonDetail,
-    getPokemonEggGroup,
-    getPokemonGrowthRate,
+    getPokemonAbility, getPokemonDetail,
+    getPokemonEggGroup, getPokemonGeneration, getPokemonGrowthRate,
     getPokemonSpecies, getPokemonType
 } from "../services/fetchPokemon.ts";
 import {useRecoilValue} from "recoil";
@@ -141,8 +139,22 @@ export function useFetch() {
 
                 return intersection.map((item) => item.pokemon);
             }
+
+            return [];
         } catch (e) {
             console.error(e);
+            return [];
+        }
+    }
+
+    const findMatchRegion = async (data: string) => {
+        try {
+            if (data) {
+                const res = await getPokemonGeneration(data);
+                return res.pokemon_species;
+            }
+            return [];
+        } catch (e) {
             return [];
         }
     }
@@ -158,6 +170,7 @@ export function useFetch() {
         findEggGroups,
         findExp,
         findNameList,
-        findMatchType
+        findMatchType,
+        findMatchRegion
     }
 }

@@ -6,8 +6,10 @@ import {useFetch} from "../../../hooks/useFetch.ts";
 import {useRecoilValue} from "recoil";
 import {lastIdState} from "../../../contexts/lastId.ts";
 import TypeBtn from "../../../components/common/TypeSetBtn.tsx";
+import {languageState} from "../../../contexts/language.ts";
 
 function PokemonBtn({data}: { data: IPokemon }) {
+    const language = useRecoilValue(languageState);
     const navigate = useNavigate();
     const id = data.url.split("/")[6];
     const lasId = useRecoilValue(lastIdState);
@@ -22,7 +24,7 @@ function PokemonBtn({data}: { data: IPokemon }) {
         findTypes(id)
             .then(res => setTypes(res!));
         setArtwork(findArtwork(id!));
-    }, [data]);
+    }, [data, language]);
 
     return (
         <>

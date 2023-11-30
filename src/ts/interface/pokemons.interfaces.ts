@@ -326,3 +326,51 @@ export interface IPokemonTypeDetail {
         slot: number;
     }[];
 }
+
+export interface IPokemonRegion {
+    id: number;
+    locations: IPokemon[];
+    main_generation: IPokemon;
+    name: string;
+    names: {
+        language: IPokemon;
+        name: string;
+    }[];
+    pokedexes: IPokemon[];
+    version_groups: IPokemon[];
+}
+
+export interface IPokemonGeneration {
+    id: number;
+    abilities: IPokemon[];
+    main_region: IPokemon;
+    moves: IPokemon[];
+    name: string;
+    names: {
+        language: IPokemon;
+        name: string;
+    }[];
+    pokemon_species: IPokemon[];
+    types: [];
+    version_groups: IPokemon[];
+}
+
+export interface IPokemonPokedex {
+    id: number;
+    descriptions: {
+        description: string;
+        language: IPokemon;
+    }[];
+    is_main_series: boolean;
+    name: string;
+    names: {
+        language: IPokemon;
+        name: string;
+    }[];
+    pokemon_entries: {
+        entry_number: number;
+        pokemon_species: IPokemon;
+    }[];
+    region: IPokemon;
+    version_groups: IPokemon[];
+}

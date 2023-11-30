@@ -11,7 +11,7 @@ import LoadingSkeleton from "../../components/common/LoadingSkeleton.tsx";
 
 function Main() {
     const lastId = useRecoilValue(lastIdState);
-    const [skeleton, setSkeleton] = useRecoilState(loadingState);
+    const [loading, setLoading] = useRecoilState(loadingState);
     const [data, setData] = useState<IPokemon[]>([]);
     const [offset, setOffset] = useState(0);
     const [hasNextPage, setHasNextPage] = useState(false);
@@ -28,7 +28,7 @@ function Main() {
                 if (!res.next || offset >= lastId) {
                     setHasNextPage(false);
                 } else {
-                    setOffset(prev => prev + 30);
+                    setOffset(prev => prev + 24);
                 }
             } catch (error) {
                 console.error(error);
@@ -39,29 +39,29 @@ function Main() {
     });
 
     useEffect(() => {
-        setSkeleton(true);
+        setLoading(true);
         try {
             getPokemonList(0)
                 .then(res => {
                     if (res.next) {
                         setHasNextPage(true);
-                        setOffset(prev => prev + 30);
+                        setOffset(prev => prev + 24);
                     }
                     setData(res.results);
                 })
         } finally {
-            setTimeout(() => setSkeleton(false), 1300);
+            setTimeout(() => setLoading(false), 1300);
         }
     }, []);
 
     return (
         <>
-            {skeleton && <LoadingSkeleton/>}
+            {loading && <LoadingSkeleton/>}
 
             <Stack gap={"1.5rem"} align={"center"}>
-                {!skeleton && <PokemonList data={data}/>}
+                {!loading && <PokemonList data={data}/>}
                 {scrolling && <Loader/>}
-                {data.length > 0 && <div ref={ref} style={{height: "1px"}}/>}
+                {(!loading && data.length > 0) && <div ref={ref} style={{height: "1px"}}/>}
             </Stack>
         </>
     );

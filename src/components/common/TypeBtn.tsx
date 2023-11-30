@@ -9,9 +9,10 @@ interface IProps {
     type: string;
     disabled?: boolean;
     onClick?: (e: React.MouseEvent | null) => void;
+    onlyIcon?: boolean;
 }
 
-function TypeBtn({type, disabled, onClick}: IProps) {
+function TypeBtn({type, disabled, onClick, onlyIcon}: IProps) {
     const language = useRecoilValue(languageState);
 
     return (
@@ -25,16 +26,16 @@ function TypeBtn({type, disabled, onClick}: IProps) {
                        style={{cursor: "pointer"}}
                        onClick={onClick}
                 >
-                    {language === "ko" ? TYPE_KO[type] : type}
+                    {!onlyIcon && (language === "ko" ? TYPE_KO[type] : type)}
                 </Badge> :
-                <Badge color={"#bfbfbf"}
+                <Badge color={"#dddddd"}
                        radius={"sm"}
                        h={"1.5rem"}
                        fullWidth
                        leftSection={<TypeIcon type={type} height={"1rem"}/>}
                        style={{cursor: "pointer"}}
                        onClick={onClick}>
-                    {language === "ko" ? TYPE_KO[type] : type}
+                    {!onlyIcon && (language === "ko" ? TYPE_KO[type] : type)}
                 </Badge>
             }
         </>

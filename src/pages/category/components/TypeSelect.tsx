@@ -4,7 +4,7 @@ import {SimpleGrid} from "@mantine/core";
 
 interface IProps {
     types: string[];
-    onClick: (item:string) => void;
+    onClick: (item: string) => void;
 }
 
 const TYPE = ["normal", "fire", "water", "grass", "flying",
@@ -15,12 +15,15 @@ const TYPE = ["normal", "fire", "water", "grass", "flying",
 function TypeSelect({types, onClick}: IProps) {
 
     const typeItems = useMemo(() => TYPE.map((item) => (
-        <TypeBtn key={item} type={item} disabled={!types.includes(item)}
+        <TypeBtn key={item}
+                 type={item}
+                 disabled={!types.includes(item)}
+                 // onlyIcon={true}
                  onClick={() => onClick(item)}/>
     )), [types]);
 
     return (
-        <SimpleGrid cols={{base: 3, sm: 5}} mb={"1rem"}>
+        <SimpleGrid cols={{base: 3, md:6}} mb={"1rem"}>
             {typeItems}
         </SimpleGrid>
     );

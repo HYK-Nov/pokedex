@@ -18,7 +18,6 @@ export const TYPE_COLORS: { [key: string]: string } = {
     dark: "#705746",
     fairy: "#D685AD",
 } as const;
-type TYPE_COLORS = typeof TYPE_COLORS[keyof typeof TYPE_COLORS];
 
 export const TYPE_KO: { [key: string]: string } = {
     normal: "노말",
@@ -40,9 +39,8 @@ export const TYPE_KO: { [key: string]: string } = {
     dark: "악",
     fairy: "페어리",
 } as const;
-type TYPE_KO = typeof TYPE_KO[keyof typeof TYPE_KO];
 
-export const VERSION_KO: {[key: string]:string}={
+export const VERSION_KO: { [key: string]: string } = {
     x: "X",
     y: "Y",
     "omega-ruby": "오메가 루비",
@@ -55,4 +53,28 @@ export const VERSION_KO: {[key: string]:string}={
     "lets-go-eevee": "렛츠고 이브이",
     sword: "소드",
     shield: "실드",
-}
+} as const;
+
+export const REGION_KO: { [key: string]: string } = {
+    kanto: "관동",
+    johto: "성도",
+    hoenn: "호연",
+    sinnoh: "신오",
+    unova: "하나",
+    kalos: "칼로스",
+    alola: "알로라",
+    galar: "가라르",
+    paldea: "팔데아",
+} as const;
+
+export const REGION_NUM: { [key: string]: string } = {
+    kanto: "1",
+    johto: "2",
+    hoenn: "3",
+    sinnoh: "4",
+    unova: "5",
+    kalos: "6",
+    alola: "7",
+    galar: "8",
+    paldea: "9",
+} as const;

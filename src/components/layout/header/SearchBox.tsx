@@ -3,24 +3,20 @@ import {IconSearch} from "@tabler/icons-react";
 import {useLocation, useNavigate} from "react-router-dom";
 import {useEffect, useRef, useState} from "react";
 import {useFetch} from "../../../hooks/useFetch.ts";
-
-interface IData {
-    value: string;
-    label: string;
-}
+import {useQuery} from "@tanstack/react-query";
 
 function SearchBox() {
     const navigate = useNavigate();
     const location = useLocation();
     const ref = useRef<HTMLInputElement>(null);
     const [value, setValue] = useState<string | null>("");
-    const [data, setData] = useState<IData[]>([]);
 
     const {findNameList} = useFetch();
-    useEffect(() => {
-        findNameList()
-            .then((res) => setData(res));
-    }, []);
+    // 전체 이름 받아오기
+    const {data} = useQuery({
+        queryKey: ['searchList'],
+        queryFn: findNameList,
+    })
 
     const handleOptionSubmit = (id: string) => {
         setValue(null);

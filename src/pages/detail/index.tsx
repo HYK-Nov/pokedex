@@ -13,6 +13,7 @@ import AbilityTable from "./components/table/AbilityTable.tsx";
 import StatTable from "./components/table/StatTable.tsx";
 import BreedingTable from "./components/table/BreedingTable.tsx";
 import FlavorTextTable from "./components/table/FlavorTextTable.tsx";
+import {useQuery} from "@tanstack/react-query";
 
 interface ILoaderData {
     detail: IPokemonDetail;
@@ -24,31 +25,35 @@ function Detail() {
     const id = detail.species.url.split("/").slice(6, 7).pop();
     const lastId = useRecoilValue(lastIdState);
     const [curTab, setCurTab] = useState<string | null>("info");
-    const [artwork, setArtwork] = useState("");
-    const [curName, setCurName] = useState("");
-    const [prevName, setPrevName] = useState("");
-    const [nextName, setNextName] = useState("");
 
     const {findName, findArtwork} = useFetch();
     useEffect(() => {
         // id 변경시, 탭 초기화
         setCurTab("info");
-
-        setArtwork(findArtwork(id!));
-
-        // 포켓몬 cur, prev, next 이름 가져오기
-        findName(id!)
-            .then(res => setCurName(res!));
-        if (Number(id) - 1 > 0) {
-            findName(Number(id) - 1!)
-                .then(res => setPrevName(res!));
-        } else setPrevName("");
-
-        if (Number(id) + 1 <= lastId) {
-            findName(Number(id) + 1!)
-                .then(res => setNextName(res!));
-        } else setNextName("");
     }, [id]);
+
+    // 포켓몬 cur, prev, next 이름 가져오기
+    const {data: prevName} = useQuery({
+        queryKey: ['prevName', id],
+        queryFn: () => findName(Number(id) - 1),
+        enabled: (Number(id) - 1) > 0,
+    })
+
+    const {data: curName} = useQuery({
+        queryKey: ['curName', id],
+        queryFn: () => findName(id!),
+    })
+
+    const {data: nextName} = useQuery({
+        queryKey: ['nextName', id],
+        queryFn: () => findName(Number(id) + 1),
+        enabled: (Number(id) + 1) <= lastId,
+    })
+
+    const {data: artWork} = useQuery({
+        queryKey: ['artWork', id],
+        queryFn: () => findArtwork(id!),
+    })
 
     return (
         <>
@@ -56,7 +61,7 @@ function Detail() {
 
             <Grid>
                 <Grid.Col span={{base: 12, sm: 4}}>
-                    <Image src={artwork} alt={curName}
+                    <Image src={artWork} alt={curName}
                            w={"80%"}
                            m={"auto"}
                            fallbackSrc={`https://placehold.co/300x300?text=${detail.name}`}
@@ -65,7 +70,7 @@ function Detail() {
                 <Grid.Col span={"auto"}>
                     <SimpleGrid cols={3} pb={"1.5rem"}>
                         {prevName && <PrevNextBtn id={Number(id) - 1} name={prevName}/>}
-                        <PrevNextBtn id={id!} name={curName} current/>
+                        <PrevNextBtn id={id!} name={curName!} current/>
                         {nextName && <PrevNextBtn id={Number(id) + 1} name={nextName}/>}
                     </SimpleGrid>
 

@@ -69,10 +69,14 @@ export function useFetch() {
             const promises = data.map(async (item) => {
                 const res = await getPokemonAbility(item.ability.url.split("/")[6]);
                 const flavor_text = res.flavor_text_entries.findLast((entry: {
-                    language: { name: string; };
+                    language: {
+                        name: string;
+                    };
                 }) => entry.language.name === language);
                 const name = res.names.find((item: {
-                    language: { name: string; };
+                    language: {
+                        name: string;
+                    };
                 }) => item.language.name === language);
 
                 return {flavor_text, name};

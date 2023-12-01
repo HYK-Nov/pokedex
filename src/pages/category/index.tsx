@@ -1,27 +1,23 @@
 import {useNavigate, useSearchParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {useFetch} from "../../hooks/useFetch.ts";
-import {IPokemon} from "../../ts/interface/pokemons.interfaces.ts";
 import PokemonList from "../../components/common/PokemonList.tsx";
 import {Box, Button, SimpleGrid, Table} from "@mantine/core";
-import {useRecoilState} from "recoil";
-import {loadingState} from "../../contexts/loading.ts";
+import {useRecoilState, useRecoilValue} from "recoil";
 import TypeSelect from "./components/TypeSelect.tsx";
-import LoadingSkeleton from "../../components/common/LoadingSkeleton.tsx";
 import RegionSelect from "./components/RegionSelect.tsx";
 import {REGION_NUM} from "../../ts/types/pokemons.types.ts";
 import Error from "../../exception/Error.tsx";
-
+import {useQueries} from "@tanstack/react-query";
+import {lastIdState} from "../../contexts/lastId.ts";
 
 function Category() {
     const navigate = useNavigate();
-    const [skeleton, setSkeleton] = useRecoilState(loadingState);
+    const lastId = useRecoilValue(lastIdState);
     const [searchParams] = useSearchParams();
     const [types, setTypes] = useState<string[]>([]);
     const [region, setRegion] = useState("");
-    const [totalData, setTotalData] = useState<IPokemon[]>([]);
     const [shouldUpdateData, setShouldUpdateData] = useState(true);
-    const [nothingResult, setNothingResult] = useState(false);
 
     const {findMatchType, findMatchRegion} = useFetch();
 
@@ -72,8 +68,6 @@ function Category() {
         const typeParams = searchParams.get("type");
         const regionParams = searchParams.get("region");
         setShouldUpdateData(true);
-        setNothingResult(false);
-        setTotalData([]);
 
         if (typeParams && typeParams.length > 0) {
             const newTypes = typeParams!.split(",") || [];
@@ -89,32 +83,35 @@ function Category() {
         }
     }, [searchParams]);
 
-    useEffect(() => {
-        if (shouldUpdateData && searchParams.size > 0) {
-            setSkeleton(true);
-            const fetchData = async () => {
-                const [res1, res2] = await Promise.all([findMatchType(types), findMatchRegion(REGION_NUM[region])]);
-                const result = res1.filter(v1 => res2.find(v2 => v1.name === v2.name));
+    const totalData = useQueries({
+        queries: [
+            {
+                queryKey: ['typesResult', searchParams.get("type")],
+                queryFn: () => findMatchType(types),
+                enabled: shouldUpdateData,
+            },
+            {
+                queryKey: ['regionResult', searchParams.get("region")],
+                queryFn: () => findMatchRegion(REGION_NUM[region]),
+                enabled: shouldUpdateData,
+            },
+        ],
+        combine: (result) => {
+            const [res1, res2] = result.map(({data}) => data || []);
 
-                if (result.length > 0) {
-                    setTotalData(result);
-                } else if (res1.length > 0 && res2.length === 0) {
-                    setTotalData(res1);
-                } else if (res1.length === 0 && res2.length > 0) {
-                    setTotalData(res2);
+            if (res1 && res2) {
+                if (res1.length > 0 && res2.length > 0) {
+                    return res1.filter(v1 => res2.find(v2 => (v1.name === v2.name) && (Number(v1.url.split("/")[6]) <= lastId)));
                 } else {
-                    setNothingResult(true);
+                    return res1.length > 0 ?
+                        res1.filter(v => Number(v.url.split("/")[6]) <= lastId) :
+                        res2.filter(v => Number(v.url.split("/")[6]) <= lastId);
                 }
+            } else {
+                return [];
             }
-
-            fetchData()
-                .finally(() => {
-                    setTimeout(() => {
-                        setSkeleton(false);
-                    }, 1000);
-                });
         }
-    }, [types, region]);
+    })
 
     return (
         <>
@@ -143,10 +140,9 @@ function Category() {
                 </SimpleGrid>
             </Box>
 
-            <div style={{margin: "3rem auto"}}>
-                {(skeleton && searchParams.size > 0) && <LoadingSkeleton/>}
-                {(!skeleton && nothingResult) && <Error/>}
-                {(!skeleton && totalData.length > 0) && <PokemonList data={totalData}/>}
+            <div style={{margin: "3rem auto", minHeight: "300px"}}>
+                {(totalData.length === 0 && searchParams.size > 0) && <Error/>}
+                {(totalData) && <PokemonList data={searchParams.size > 0 ? totalData : []}/>}
             </div>
         </>
     );

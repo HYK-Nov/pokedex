@@ -6,104 +6,58 @@ import {
     IPokemonTypeDetail
 } from "../ts/interface/pokemons.interfaces.ts";
 
-const api = "https://pokeapi.co/api/v2";
+const getApi = axios.create({
+    baseURL: "https://pokeapi.co/api/v2",
+    method: "GET",
+    responseType: "json",
+})
 
 export const getPokemonDetail = async (data: string | number): Promise<IPokemonDetail> => {
-    return await axios({
-        baseURL: `${api}/pokemon/${data}`,
-        method: "GET",
-        responseType: "json",
-    })
-        .then(res => res.data)
-        .catch(e => console.error(e));
+    return await getApi.get(`/pokemon/${data}`)
+        .then(res => res.data);
 }
 
 export const getPokemonSpecies = async (data: string | number): Promise<IPokemonSpecies> => {
-    return await axios({
-        baseURL: `${api}/pokemon-species/${data}`,
-        method: "GET",
-        responseType: "json",
-    })
-        .then(res => res.data)
-        .catch(e => console.error(e));
+    return await getApi.get(`/pokemon-species/${data}`)
+        .then(res => res.data);
 }
 
 export const getPokemonList = async (offset: number) => {
-    return await axios({
-        baseURL: `${api}/pokemon/?limit=24&offset=${offset}/`,
-        method: "GET",
-        responseType: "json",
-    })
-        .then(res => res.data)
-        .catch(e => console.error(e));
+    return await getApi.get(`/pokemon/?limit=24&offset=${offset}`)
+        .then(res => res.data);
 }
 
 export const getPokemonAbility = async (data: string | number) => {
-    return await axios({
-        baseURL: `${api}/ability/${data}`,
-        method: "GET",
-        responseType: "json",
-    })
-        .then(res => res.data)
-        .catch(e => console.error(e));
+    return await getApi.get(`/ability/${data}`)
+        .then(res => res.data);
 }
 
 export const getPokemonEggGroup = async (data: string | number) => {
-    return await axios({
-        baseURL: `${api}/egg-group/${data}`,
-        method: "GET",
-        responseType: "json",
-    })
-        .then(res => res.data)
-        .catch(e => console.error(e));
+    return await getApi.get(`/egg-group/${data}`)
+        .then(res => res.data);
 }
 
 export const getPokemonGrowthRate = async (data: string | number) => {
-    return await axios({
-        baseURL: `${api}/growth-rate/${data}`,
-        method: "GET",
-        responseType: "json",
-    })
-        .then(res => res.data)
-        .catch(e => console.error(e));
+    return await getApi.get(`/growth-rate/${data}`)
+        .then(res => res.data);
 }
 
 export const getPokemonType = async (data: string | number): Promise<IPokemonTypeDetail> => {
-    return await axios({
-        baseURL: `${api}/type/${data}`,
-        method: "GET",
-        responseType: "json",
-    })
-        .then(res => res.data)
-        .catch(e => console.error(e));
+    return await getApi.get(`/type/${data}`)
+        .then(res => res.data);
 }
 
 export const getPokemonRegion = async (data: string | number): Promise<IPokemonRegion> => {
-    return await axios({
-        baseURL: `${api}/region/${data}`,
-        method: "GET",
-        responseType: "json",
-    })
-        .then(res => res.data)
-        .catch(e => console.error(e));
+    return await getApi.get(`/region/${data}`)
+        .then(res => res.data);
 }
 
 export const getPokemonGeneration = async (data: string | number): Promise<IPokemonGeneration> => {
-    return await axios({
-        baseURL: `${api}/generation/${data}`,
-        method: "GET",
-        responseType: "json",
-    })
-        .then(res => res.data)
-        .catch(e => console.error(e));
+    return await getApi.get(`/generation/${data}`)
+        .then(res => res.data);
 }
 
 export const getPokemonPokedex = async (data: string | number): Promise<IPokemonPokedex> => {
-    return await axios({
-        baseURL: `${api}/pokedex/${data}`,
-        method: "GET",
-        responseType: "json",
-    })
-        .then(res => res.data)
-        .catch(e => console.error(e));
+    return await getApi.get(`/pokedex/${data}`)
+        .then(res => res.data);
 }

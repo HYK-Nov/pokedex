@@ -3,13 +3,15 @@ import {useEffect, useState} from "react";
 import {useFetch} from "../../hooks/useFetch.ts";
 import PokemonList from "../../components/common/PokemonList.tsx";
 import {Box, Button, SimpleGrid, Table} from "@mantine/core";
-import {useRecoilState, useRecoilValue} from "recoil";
+import {useRecoilValue} from "recoil";
 import TypeSelect from "./components/TypeSelect.tsx";
 import RegionSelect from "./components/RegionSelect.tsx";
 import {REGION_NUM} from "../../ts/types/pokemons.types.ts";
 import Error from "../../exception/Error.tsx";
 import {useQueries} from "@tanstack/react-query";
 import {lastIdState} from "../../contexts/lastId.ts";
+import {IPokemon} from "../../ts/interface/pokemons.interfaces.ts";
+import LoadingSkeleton from "../../components/common/LoadingSkeleton.tsx";
 
 function Category() {
     const navigate = useNavigate();
@@ -18,8 +20,25 @@ function Category() {
     const [types, setTypes] = useState<string[]>([]);
     const [region, setRegion] = useState("");
     const [shouldUpdateData, setShouldUpdateData] = useState(true);
+    const [loading, setLoading] = useState(false);
+    const [totalData, setTotalData] = useState<IPokemon[]>([]);
 
     const {findMatchType, findMatchRegion} = useFetch();
+
+    const combinedQueries = useQueries({
+        queries: [
+            {
+                queryKey: ['typesResult', types],
+                queryFn: () => findMatchType(types),
+                enabled: shouldUpdateData,
+            },
+            {
+                queryKey: ['regionResult', region],
+                queryFn: () => findMatchRegion(REGION_NUM[region]),
+                enabled: shouldUpdateData,
+            },
+        ]
+    })
 
     const generateParams = (types: string[], region: string) => {
         if (types.length === 0 && region === "") {
@@ -68,6 +87,7 @@ function Category() {
         const typeParams = searchParams.get("type");
         const regionParams = searchParams.get("region");
         setShouldUpdateData(true);
+        (typeParams || regionParams) && setLoading(true);
 
         if (typeParams && typeParams.length > 0) {
             const newTypes = typeParams!.split(",") || [];
@@ -83,35 +103,20 @@ function Category() {
         }
     }, [searchParams]);
 
-    const totalData = useQueries({
-        queries: [
-            {
-                queryKey: ['typesResult', searchParams.get("type")],
-                queryFn: () => findMatchType(types),
-                enabled: shouldUpdateData,
-            },
-            {
-                queryKey: ['regionResult', searchParams.get("region")],
-                queryFn: () => findMatchRegion(REGION_NUM[region]),
-                enabled: shouldUpdateData,
-            },
-        ],
-        combine: (result) => {
-            const [res1, res2] = result.map(({data}) => data || []);
+    useEffect(() => {
+        if (combinedQueries.length > 0 && shouldUpdateData) {
+            const [res1, res2] = combinedQueries.map(({data}) => data || []);
 
-            if (res1 && res2) {
-                if (res1.length > 0 && res2.length > 0) {
-                    return res1.filter(v1 => res2.find(v2 => (v1.name === v2.name) && (Number(v1.url.split("/")[6]) <= lastId)));
-                } else {
-                    return res1.length > 0 ?
-                        res1.filter(v => Number(v.url.split("/")[6]) <= lastId) :
-                        res2.filter(v => Number(v.url.split("/")[6]) <= lastId);
-                }
+            if (res1.length > 0 && res2.length > 0) {
+                setTotalData(res1.filter(v1 => res2.find(v2 => (v1.name === v2.name) && (Number(v1.url.split("/")[6]) <= lastId))));
             } else {
-                return [];
+                setTotalData(res1.length > 0 ?
+                    res1.filter(v => Number(v.url.split("/")[6]) <= lastId)
+                    : res2.filter(v => Number(v.url.split("/")[6]) <= lastId));
             }
         }
-    })
+        setTimeout(() => setLoading(false), 500);
+    }, [combinedQueries]);
 
     return (
         <>
@@ -141,8 +146,9 @@ function Category() {
             </Box>
 
             <div style={{margin: "3rem auto", minHeight: "300px"}}>
-                {(totalData.length === 0 && searchParams.size > 0) && <Error/>}
-                {(totalData) && <PokemonList data={searchParams.size > 0 ? totalData : []}/>}
+                {loading && <LoadingSkeleton/>}
+                {(!loading && totalData.length === 0 && searchParams.size > 0) && <Error/>}
+                {(!loading && totalData) && <PokemonList data={totalData}/>}
             </div>
         </>
     );

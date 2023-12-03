@@ -1,6 +1,6 @@
 import {useNavigate} from "react-router-dom";
 import {Grid, Image, Stack, Text, UnstyledButton} from "@mantine/core";
-import {isMobile} from "../../../hooks/useCheckDevice.ts";
+import {useMediaQuery} from "@mantine/hooks";
 
 interface IProps {
     id: string | number;
@@ -10,7 +10,7 @@ interface IProps {
 
 function PrevNextBtn({id, name, current}: IProps) {
     const navigate = useNavigate();
-    const mobile = isMobile();
+    const isMobile = useMediaQuery(`(max-width: 36em)`);
 
     return (
         <UnstyledButton onClick={() => navigate(`/${id}`)}>
@@ -23,7 +23,7 @@ function PrevNextBtn({id, name, current}: IProps) {
                            loading={"lazy"}
                     />
                 </Grid.Col>
-                <Grid.Col span={{base: "auto", sm: 6}} style={{textAlign: mobile ? "center" : "left"}}>
+                <Grid.Col span={{base: "auto", sm: 6}} style={{textAlign: isMobile ? "center" : "left"}}>
                     <Stack gap={"0.5rem"}>
                         <Text size={"0.75rem"} fw={current ? "bold" : "normal"}>No. {id}</Text>
                         <Text size={"1.1rem"} fw={current ? "bold" : "normal"} style={{wordBreak:"break-word"}}>{name}</Text>

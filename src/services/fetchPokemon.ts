@@ -1,6 +1,6 @@
 import axios from "axios";
 import {
-    IPokemonDetail, IPokemonGeneration, IPokemonPokedex,
+    IPokemonDetail, IPokemonGeneration, IPokemonList, IPokemonPokedex,
     IPokemonRegion,
     IPokemonSpecies,
     IPokemonTypeDetail
@@ -9,7 +9,10 @@ import {
 const getApi = axios.create({
     baseURL: "https://pokeapi.co/api/v2",
     method: "GET",
-    responseType: "json",
+    headers: {
+        "Content-Type": "application/json",
+        "Content-Encoding": "gzip",
+    }
 })
 
 export const getPokemonDetail = async (data: string | number): Promise<IPokemonDetail> => {
@@ -22,8 +25,13 @@ export const getPokemonSpecies = async (data: string | number): Promise<IPokemon
         .then(res => res.data);
 }
 
-export const getPokemonList = async (offset: number) => {
-    return await getApi.get(`/pokemon/?limit=24&offset=${offset}`)
+export const getPokemonList = async (offset: number): Promise<IPokemonList> => {
+    return await getApi.get(`/pokemon/?limit=16&offset=${offset}`)
+        .then(res => res.data);
+}
+
+export const getPokemonAllList = async (lastId: number): Promise<IPokemonList> => {
+    return await getApi.get(`/pokemon/?limit=${lastId}`)
         .then(res => res.data);
 }
 

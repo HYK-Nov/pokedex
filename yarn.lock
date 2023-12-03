@@ -751,6 +751,15 @@
   resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.12.0.tgz#e89b64b6fa97a8a5b740a4c38c2904b80f1f229a"
   integrity sha512-2hXv036Bux90e1GXTWSMfNzfDDK8LA8JYEWfyHxzvwdp6GyoWEovKc9cotb3KCKmkdwsIBuFGX7ScTWyiHv7Eg==
 
+"@rollup/pluginutils@^5.0.2":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@rollup/pluginutils/-/pluginutils-5.1.0.tgz#7e53eddc8c7f483a4ad0b94afb1f7f5fd3c771e0"
+  integrity sha512-XTIWOPPcpvyKI6L1NHo0lFlCyznUEyPmPY1mc3KpPVDYulHSTvyeLNVW00QTLIAFNhR3kYnJTQHeGqU4M3n09g==
+  dependencies:
+    "@types/estree" "^1.0.0"
+    estree-walker "^2.0.2"
+    picomatch "^2.3.1"
+
 "@rollup/pluginutils@^5.0.5":
   version "5.0.5"
   resolved "https://registry.yarnpkg.com/@rollup/pluginutils/-/pluginutils-5.0.5.tgz#bbb4c175e19ebfeeb8c132c2eea0ecb89941a66c"
@@ -5972,6 +5981,13 @@ verror@1.10.0:
     assert-plus "^1.0.0"
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
+
+vite-plugin-compression2@^0.11.0:
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/vite-plugin-compression2/-/vite-plugin-compression2-0.11.0.tgz#341e13902c9e89cbbf7bc4bfc7b651f29c0cf517"
+  integrity sha512-U6oEyRXZD26BynOgD/tStNTbQOLPt96aQNj/gdJTicKVYCQCdlV7QdmSF7VEhSyjiS59pQRhiMBu/uajprxWLA==
+  dependencies:
+    "@rollup/pluginutils" "^5.0.2"
 
 vite-plugin-svgr@^4.2.0:
   version "4.2.0"

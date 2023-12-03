@@ -26,7 +26,7 @@ function RegionSelect({region, onClick}: IProps) {
     ))
 
     return (
-        <SimpleGrid cols={{base: 3, md: 6}} mb={"1rem"}>
+        <SimpleGrid cols={{base: 2, sm: 3, md: 6}} mb={"1rem"}>
             {items}
         </SimpleGrid>
     );

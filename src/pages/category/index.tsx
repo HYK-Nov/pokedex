@@ -1,43 +1,41 @@
 import {useNavigate, useSearchParams} from "react-router-dom";
-import {useEffect, useState} from "react";
+import {lazy, Suspense, useEffect, useState} from "react";
 import {useFetch} from "../../hooks/useFetch.ts";
-import PokemonList from "../../components/common/PokemonList.tsx";
-import {Box, Button, SimpleGrid, Table} from "@mantine/core";
+import {Button, Paper, SimpleGrid, Table} from "@mantine/core";
 import {useRecoilValue} from "recoil";
 import TypeSelect from "./components/TypeSelect.tsx";
 import RegionSelect from "./components/RegionSelect.tsx";
 import {REGION_NUM} from "../../ts/types/pokemons.types.ts";
-import Error from "../../exception/Error.tsx";
-import {useQueries} from "@tanstack/react-query";
+import {useQuery} from "@tanstack/react-query";
 import {lastIdState} from "../../contexts/lastId.ts";
 import {IPokemon} from "../../ts/interface/pokemons.interfaces.ts";
 import LoadingSkeleton from "../../components/common/LoadingSkeleton.tsx";
+import {languageState} from "../../contexts/language.ts";
+
+const PokemonList = lazy(() => import("../../components/common/PokemonList.tsx"));
 
 function Category() {
+    const language = useRecoilValue(languageState);
     const navigate = useNavigate();
     const lastId = useRecoilValue(lastIdState);
     const [searchParams] = useSearchParams();
     const [types, setTypes] = useState<string[]>([]);
     const [region, setRegion] = useState("");
-    const [shouldUpdateData, setShouldUpdateData] = useState(true);
-    const [loading, setLoading] = useState(false);
     const [totalData, setTotalData] = useState<IPokemon[]>([]);
+    const [shouldUpdateData, setShouldUpdateData] = useState(true);
 
     const {findMatchType, findMatchRegion} = useFetch();
-
-    const combinedQueries = useQueries({
-        queries: [
-            {
-                queryKey: ['typesResult', types],
-                queryFn: () => findMatchType(types),
-                enabled: shouldUpdateData,
-            },
-            {
-                queryKey: ['regionResult', region],
-                queryFn: () => findMatchRegion(REGION_NUM[region]),
-                enabled: shouldUpdateData,
-            },
-        ]
+    const {data: typesResult} = useQuery({
+        queryKey: ['typesResult', types],
+        queryFn: () => findMatchType(types),
+        enabled: shouldUpdateData,
+        initialData: [],
+    });
+    const {data: regionResult} = useQuery({
+        queryKey: ['regionResult', region],
+        queryFn: () => findMatchRegion(REGION_NUM[region]),
+        enabled: shouldUpdateData,
+        initialData: [],
     })
 
     const generateParams = (types: string[], region: string) => {
@@ -87,7 +85,7 @@ function Category() {
         const typeParams = searchParams.get("type");
         const regionParams = searchParams.get("region");
         setShouldUpdateData(true);
-        (typeParams || regionParams) && setLoading(true);
+        setTotalData([]);
 
         if (typeParams && typeParams.length > 0) {
             const newTypes = typeParams!.split(",") || [];
@@ -104,51 +102,56 @@ function Category() {
     }, [searchParams]);
 
     useEffect(() => {
-        if (combinedQueries.length > 0 && shouldUpdateData) {
-            const [res1, res2] = combinedQueries.map(({data}) => data || []);
-
-            if (res1.length > 0 && res2.length > 0) {
-                setTotalData(res1.filter(v1 => res2.find(v2 => (v1.name === v2.name) && (Number(v1.url.split("/")[6]) <= lastId))));
-            } else {
-                setTotalData(res1.length > 0 ?
-                    res1.filter(v => Number(v.url.split("/")[6]) <= lastId)
-                    : res2.filter(v => Number(v.url.split("/")[6]) <= lastId));
+        if (shouldUpdateData) {
+            if (typesResult.length > 0 && regionResult.length > 0) {
+                setTotalData(typesResult.filter(v1 => regionResult.find(v2 => (v1.name === v2.name) && (Number(v1.url.split("/")[6]) <= lastId))));
+            } else if (typesResult.length > 0) {
+                setTotalData(typesResult.filter(v => Number(v.url.split("/")[6]) <= lastId));
+            } else if (regionResult.length > 0) {
+                setTotalData(regionResult.filter(v => Number(v.url.split("/")[6]) <= lastId));
             }
         }
-        setTimeout(() => setLoading(false), 500);
-    }, [combinedQueries]);
+    }, [typesResult, regionResult]);
 
     return (
         <>
-            <Box bg={"white"}>
+            <Paper bg={"white"} style={{padding: "5vh"}} withBorder>
                 <Table>
                     <Table.Thead></Table.Thead>
                     <Table.Tbody>
                         <Table.Tr>
-                            <Table.Th>타입</Table.Th>
+                            <Table.Th style={{textAlign: "center", width: "10%", fontSize: "1.1rem"}}>
+                                {language === "ko" ? "타입" : "Type"}
+                            </Table.Th>
                             <Table.Td>
                                 <TypeSelect types={types} onClick={handleTypeClick}/>
                             </Table.Td>
                         </Table.Tr>
                         <Table.Tr>
-                            <Table.Th>지역</Table.Th>
+                            <Table.Th style={{textAlign: "center", width: "10%", fontSize: "1.1rem"}}>
+                                {language === "ko" ? "지역" : "Region"}
+                            </Table.Th>
                             <Table.Td>
                                 <RegionSelect region={region} onClick={handleRegionClick}/>
                             </Table.Td>
                         </Table.Tr>
                     </Table.Tbody>
                 </Table>
-                <SimpleGrid cols={2} mb={"2rem"}>
-                    <Button variant={"outline"} color={"#aaaaaa"} onClick={handleResetClick}>초기화</Button>
+                <SimpleGrid cols={2}>
+                    <Button variant={"outline"} color={"#aaaaaa"} onClick={handleResetClick}>
+                        {language === "ko" ? "초기화" : "Reset"}
+                    </Button>
                     <Button
-                        onClick={() => navigate(`/category${generateParams(types, region)}`)}>검색</Button>
+                        onClick={() => navigate(`/category${generateParams(types, region)}`)}>
+                        {language === "ko" ? "검색" : "Search"}
+                    </Button>
                 </SimpleGrid>
-            </Box>
+            </Paper>
 
-            <div style={{margin: "3rem auto", minHeight: "300px"}}>
-                {loading && <LoadingSkeleton/>}
-                {(!loading && totalData.length === 0 && searchParams.size > 0) && <Error/>}
-                {(!loading && totalData) && <PokemonList data={totalData}/>}
+            <div style={{margin: "3rem auto"}}>
+                <Suspense fallback={<LoadingSkeleton/>}>
+                    <PokemonList data={totalData}/>
+                </Suspense>
             </div>
         </>
     );

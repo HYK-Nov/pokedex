@@ -3,6 +3,15 @@
   src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/Cafe24Ohsquare.woff') format('woff');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
+}
+
+.header {
+  background-color: var(--mantine-color-red-6) !important;
+  height: 65px;
+  position: sticky;
+  top: 0;
+  z-index: 99999;
 }
 
 .logo {
@@ -16,6 +25,6 @@
   font-size: 1.1rem;
 }
 
-.active{
+.active {
   font-weight: 900;
 }

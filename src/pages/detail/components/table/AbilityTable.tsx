@@ -1,18 +1,21 @@
 import {Table, Title} from "@mantine/core";
 import {IPokemonDetail} from "../../../../ts/interface/pokemons.interfaces.ts";
-import {IDetailAbilities} from "../../../../ts/interface/detail.interfaces.ts";
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {useFetch} from "../../../../hooks/useFetch.ts";
+import {useRecoilValue} from "recoil";
+import {languageState} from "../../../../contexts/language.ts";
+import {useQuery} from "@tanstack/react-query";
 
 function AbilityTable({detail}: { detail: IPokemonDetail }) {
-    const [abilities, setAbilities] = useState<IDetailAbilities[]>([]);
+    const language = useRecoilValue(languageState);
 
     const {findAbilities} = useFetch();
-    useEffect(() => {
-        // 특성 정보 가져오기
-        findAbilities(detail.abilities)
-            .then(res => setAbilities(res));
-    }, [detail]);
+    // 특성 정보 가져오기
+    const {data: abilities, refetch: abilitiesRefetch} = useQuery({
+        queryKey: ['abilities', detail.abilities],
+        queryFn: () => findAbilities(detail.abilities),
+        initialData: [],
+    })
 
     // 특성 테이블 열
     const abilityRows = detail.abilities.map((item, idx) => {
@@ -28,19 +31,24 @@ function AbilityTable({detail}: { detail: IPokemonDetail }) {
         } else return null;
     });
 
+    useEffect(() => {
+        abilitiesRefetch();
+    }, [language]);
+
     return (
         <Table withColumnBorders>
             <Table.Thead>
                 <Table.Tr>
                     <Table.Td align={"center"} colSpan={2}>
-                        <Title order={4}>특성</Title>
+                        <Title order={4}>{language === "ko" ? "특성" : "Abilities"}</Title>
                     </Table.Td>
                 </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
                 {abilityRows}
             </Table.Tbody>
-            <Table.Caption style={{textAlign: "end"}}>숨겨진 특성(*)</Table.Caption>
+            <Table.Caption
+                style={{textAlign: "end"}}>{language === "ko" ? "숨겨진 특성" : "Hidden Ability"}(*)</Table.Caption>
         </Table>
     );
 }

@@ -22,8 +22,8 @@ function TypeBtn({type, disabled, onClick, onlyIcon}: IProps) {
                        radius={"sm"}
                        h={"1.5rem"}
                        fullWidth
-                       leftSection={<TypeIcon type={type} height={"1rem"}/>}
-                       style={{cursor: "pointer"}}
+                       leftSection={<TypeIcon type={type} height={"0.8rem"}/>}
+                       style={{cursor: "pointer", fontWeight: 900}}
                        onClick={onClick}
                 >
                     {!onlyIcon && (language === "ko" ? TYPE_KO[type] : type)}
@@ -32,8 +32,8 @@ function TypeBtn({type, disabled, onClick, onlyIcon}: IProps) {
                        radius={"sm"}
                        h={"1.5rem"}
                        fullWidth
-                       leftSection={<TypeIcon type={type} height={"1rem"}/>}
-                       style={{cursor: "pointer"}}
+                       leftSection={<TypeIcon type={type} height={"0.8rem"}/>}
+                       style={{cursor: "pointer", fontWeight: 900}}
                        onClick={onClick}>
                     {!onlyIcon && (language === "ko" ? TYPE_KO[type] : type)}
                 </Badge>

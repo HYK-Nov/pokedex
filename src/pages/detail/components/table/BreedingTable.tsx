@@ -1,39 +1,46 @@
 import {Table, Title} from "@mantine/core";
 import {IPokemonSpecies} from "../../../../ts/interface/pokemons.interfaces.ts";
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {useFetch} from "../../../../hooks/useFetch.ts";
+import {useRecoilValue} from "recoil";
+import {languageState} from "../../../../contexts/language.ts";
+import {useQuery} from "@tanstack/react-query";
 
 function BreedingTable({species}: { species: IPokemonSpecies }) {
-    const [eggGroup, setEggGroup] = useState<string[]>([]);
-    const [exp, setExp] = useState(0);
+    const language = useRecoilValue(languageState);
 
     const {findEggGroups, findExp} = useFetch();
+    // 알 그룹 가져오기
+    const {data: eggGroup, refetch: eggGroupRefetch} = useQuery({
+        queryKey: ['eggGroup', species.egg_groups],
+        queryFn: () => findEggGroups(species.egg_groups),
+        initialData: [],
+    });
+    // 최대 경험치 가져오기
+    const {data: exp} = useQuery({
+        queryKey: ['eggGroup', species.growth_rate],
+        queryFn: () => findExp(species.growth_rate),
+        initialData: 0,
+    })
+
     useEffect(() => {
-
-        // 알 그룹 가져오기
-        findEggGroups(species.egg_groups)
-            .then(res => setEggGroup(res));
-
-        // 최대 경험치 가져오기
-        findExp(species.growth_rate)
-            .then(res => setExp(res));
-
-    }, [species]);
+        eggGroupRefetch();
+    }, [language]);
 
     return (
         <Table layout={"fixed"} withColumnBorders>
             <Table.Thead>
                 <Table.Tr>
                     <Table.Th colSpan={5} style={{textAlign: "center"}}>
-                        <Title order={4}>유전 정보</Title>
+                        <Title order={4}>{language === "ko" ? "유전 정보" : "Breeding"}</Title>
                     </Table.Th>
                 </Table.Tr>
                 <Table.Tr>
-                    <Table.Th style={{textAlign: "center"}}>성비</Table.Th>
-                    <Table.Th style={{textAlign: "center"}}>알 그룹</Table.Th>
-                    <Table.Th style={{textAlign: "center"}}>부화 걸음수</Table.Th>
-                    <Table.Th style={{textAlign: "center"}}>최대 경험치량</Table.Th>
-                    <Table.Th style={{textAlign: "center"}}>포획률</Table.Th>
+                    <Table.Th style={{textAlign: "center"}}>{language === "ko" ? "성비" : "Gender Ratio"}</Table.Th>
+                    <Table.Th style={{textAlign: "center"}}>{language === "ko" ? "알 그룹" : "Egg Group"}</Table.Th>
+                    <Table.Th style={{textAlign: "center"}}>{language === "ko" ? "부화 걸음수" : "Hatch Count"}</Table.Th>
+                    <Table.Th style={{textAlign: "center"}}>{language === "ko" ? "최대 경험치량" : "Max Exp"}</Table.Th>
+                    <Table.Th style={{textAlign: "center"}}>{language === "ko" ? "포획률" : "Catch Rate"}</Table.Th>
                 </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
@@ -41,8 +48,8 @@ function BreedingTable({species}: { species: IPokemonSpecies }) {
                     {/* 성비 */}
                     <Table.Td align={"center"}>
                         {species.gender_rate !== -1 && (8 - species.gender_rate) / 8 * 100 < 100 &&
-                            <>수컷: {(8 - species.gender_rate) / 8 * 100}%<br/></>}
-                        {species.gender_rate !== -1 && species.gender_rate / 8 * 100 < 100 && `암컷: ${species.gender_rate / 8 * 100}%`}
+                            <>{language === "ko" ? "수컷" : "M"}: {(8 - species.gender_rate) / 8 * 100}%<br/></>}
+                        {species.gender_rate !== -1 && species.gender_rate / 8 * 100 < 100 && `${language === "ko" ? "암컷" : "F"}: ${species.gender_rate / 8 * 100}%`}
                         {species.gender_rate === -1 && "없음"}
                     </Table.Td>
 

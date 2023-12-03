@@ -4,7 +4,7 @@ import {
 } from "../../ts/interface/pokemons.interfaces.ts";
 import {useEffect, useState} from "react";
 import {useFetch} from "../../hooks/useFetch.ts";
-import {Grid, Image, SimpleGrid, Tabs, Title} from "@mantine/core";
+import {Grid, Image, Paper, SimpleGrid, Tabs, Title} from "@mantine/core";
 import {useRecoilValue} from "recoil";
 import {lastIdState} from "../../contexts/lastId.ts";
 import PrevNextBtn from "./components/PrevNextBtn.tsx";
@@ -14,6 +14,7 @@ import StatTable from "./components/table/StatTable.tsx";
 import BreedingTable from "./components/table/BreedingTable.tsx";
 import FlavorTextTable from "./components/table/FlavorTextTable.tsx";
 import {useQuery} from "@tanstack/react-query";
+import {languageState} from "../../contexts/language.ts";
 
 interface ILoaderData {
     detail: IPokemonDetail;
@@ -21,6 +22,7 @@ interface ILoaderData {
 }
 
 function Detail() {
+    const language = useRecoilValue(languageState);
     const {detail, species} = useLoaderData() as ILoaderData;
     const id = detail.species.url.split("/").slice(6, 7).pop();
     const lastId = useRecoilValue(lastIdState);
@@ -33,18 +35,18 @@ function Detail() {
     }, [id]);
 
     // 포켓몬 cur, prev, next 이름 가져오기
-    const {data: prevName} = useQuery({
+    const {data: prevName, refetch: prevNameRefetch} = useQuery({
         queryKey: ['prevName', id],
         queryFn: () => findName(Number(id) - 1),
         enabled: (Number(id) - 1) > 0,
     })
 
-    const {data: curName} = useQuery({
+    const {data: curName, refetch: curNameRefetch} = useQuery({
         queryKey: ['curName', id],
         queryFn: () => findName(id!),
     })
 
-    const {data: nextName} = useQuery({
+    const {data: nextName, refetch: nextNameRefetch} = useQuery({
         queryKey: ['nextName', id],
         queryFn: () => findName(Number(id) + 1),
         enabled: (Number(id) + 1) <= lastId,
@@ -55,12 +57,18 @@ function Detail() {
         queryFn: () => findArtwork(id!),
     })
 
+    useEffect(() => {
+        prevNameRefetch();
+        curNameRefetch();
+        nextNameRefetch();
+    }, [language]);
+
     return (
-        <>
-            <Title pb={"1rem"}>{curName}</Title>
+        <Paper withBorder p={"2rem"}>
 
             <Grid>
                 <Grid.Col span={{base: 12, sm: 4}}>
+                    <Title pb={"1rem"}>{curName}</Title>
                     <Image src={artWork} alt={curName}
                            w={"80%"}
                            m={"auto"}
@@ -76,9 +84,9 @@ function Detail() {
 
                     <Tabs value={curTab} onChange={setCurTab}>
                         <Tabs.List grow>
-                            <Tabs.Tab value={"info"}>정보</Tabs.Tab>
-                            <Tabs.Tab value={"detail"}>세부 정보</Tabs.Tab>
-                            <Tabs.Tab value={"flavorText"}>도감 설명</Tabs.Tab>
+                            <Tabs.Tab value={"info"}>{language === "ko" ? "정보" : "Info"}</Tabs.Tab>
+                            <Tabs.Tab value={"detail"}>{language === "ko" ? "세부 정보" : "Detail"}</Tabs.Tab>
+                            <Tabs.Tab value={"flavorText"}>{language === "ko" ? "도감 설명" : "FlavorText"}</Tabs.Tab>
                         </Tabs.List>
 
                         {/* 정보 탭 */}
@@ -106,7 +114,7 @@ function Detail() {
                     </Tabs>
                 </Grid.Col>
             </Grid>
-        </>
+        </Paper>
     )
         ;
 }

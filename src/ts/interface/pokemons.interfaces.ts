@@ -3,6 +3,13 @@ export interface IPokemon {
     url: string;
 }
 
+export interface IPokemonList {
+    count: number;
+    next: string;
+    previous: string;
+    results: IPokemon[];
+}
+
 export interface IPokemonDetail {
     id: number;
     name: string;

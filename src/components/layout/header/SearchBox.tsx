@@ -1,48 +1,76 @@
-import {Select} from "@mantine/core";
+import {ActionIcon, Button, Input, Modal, ScrollArea, Stack} from "@mantine/core";
 import {IconSearch} from "@tabler/icons-react";
-import {useLocation, useNavigate} from "react-router-dom";
-import {useEffect, useRef, useState} from "react";
-import {useFetch} from "../../../hooks/useFetch.ts";
+import {useNavigate} from "react-router-dom";
+import {useState} from "react";
+import {useMediaQuery} from "@mantine/hooks";
 import {useQuery} from "@tanstack/react-query";
+import {useFetch} from "../../../hooks/useFetch.ts";
 
 function SearchBox() {
+    const isMobile = useMediaQuery(`(max-width: 36em)`);
     const navigate = useNavigate();
-    const location = useLocation();
-    const ref = useRef<HTMLInputElement>(null);
-    const [value, setValue] = useState<string | null>("");
+    const [open, setOpen] = useState(false);
+    const [searchKeyword, setSearchKeyword] = useState("");
 
     const {findNameList} = useFetch();
-    // 전체 이름 받아오기
     const {data} = useQuery({
         queryKey: ['searchList'],
-        queryFn: findNameList,
-    })
+        queryFn: () => findNameList(),
+        initialData: [],
+    });
 
-    const handleOptionSubmit = (id: string) => {
-        setValue(null);
-        // 포커스 아웃
-        if (ref.current) {
-            ref.current.blur();
-        }
-        navigate(`/${id}`);
+    const handleModalClose = () => {
+        setOpen(prev => !prev);
+        setSearchKeyword("");
     }
 
-    useEffect(() => {
-        setValue(null);
-    }, [location.pathname, value]);
+    const items = data!.filter((item) =>
+        item.name?.match(new RegExp(searchKeyword)))
+        .map((item) => (
+            <Button key={item.id}
+                    variant={"subtle"}
+                    fullWidth
+                    styles={{inner: {display: 'flex', justifyContent: 'left'}}}
+                    onClick={() => {
+                        handleModalClose();
+                        navigate(`/${item!.id}`);
+                    }}>
+                {item!.name}
+            </Button>
+        ))
 
     return (
-        <Select
-            searchable
-            rightSection={<IconSearch/>}
-            nothingFoundMessage={"Not Found"}
-            maxDropdownHeight={200}
-            data={data}
-            ref={ref}
-            value={value}
-            onChange={setValue}
-            onOptionSubmit={handleOptionSubmit}/>
-    );
+        <>
+            <Modal opened={open}
+                   onClose={handleModalClose}
+                   size={isMobile ? "100%" : "75%"}
+                   withCloseButton={false}
+                   scrollAreaComponent={ScrollArea.Autosize}
+                   zIndex={100000}>
+                <div style={{height: "25rem"}}>
+                    <Input value={searchKeyword}
+                           onChange={e => setSearchKeyword(e.target.value)}/>
+                    <Stack gap={"0.5rem"} m={"1rem auto"}>
+                        {items}
+                    </Stack>
+                </div>
+            </Modal>
+
+            {
+                isMobile ?
+                    <ActionIcon variant={"transparent"}
+                                onClick={() => setOpen(true)}>
+                        <IconSearch color={"white"} size={"1.8rem"}/>
+                    </ActionIcon>
+                    : <Input component={"button"}
+                             pointer
+                             w={"200px"}
+                             leftSection={<IconSearch color={"var(--mantine-color-red-filled)"}/>}
+                             onClick={() => setOpen(true)}/>
+            }
+        </>
+    )
+        ;
 }
 
 export default SearchBox;

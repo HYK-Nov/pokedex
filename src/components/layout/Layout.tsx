@@ -5,7 +5,7 @@ import ScrollToTopBtn from "../common/ScrollToTopBtn.tsx";
 import {useEffect} from "react";
 
 function Layout() {
-    const {search} = useLocation();
+    const {search, pathname} = useLocation();
 
     useEffect(() => {
         window.onbeforeunload = () => {
@@ -15,22 +15,21 @@ function Layout() {
 
     useEffect(() => {
         window.scrollTo({top: 0, behavior: "auto"});
-    }, [search]);
+    }, [search, pathname]);
 
     return (
         <>
-            <Header/>
+            <header>
+                <Header/>
+            </header>
             <div style={{position: "fixed", zIndex: "999", bottom: "2vh", right: "2vw"}}>
                 <ScrollToTopBtn/>
             </div>
-            <Container style={{margin: "4vh auto"}} size={"lg"}>
-                <Outlet/>
-            </Container>
-            <footer>
-                <Container>
-                    Footer
+            <section style={{padding: "5vh 0", backgroundColor: "#eeeeee", minHeight: window.innerHeight - 65}}>
+                <Container size={"lg"}>
+                    <Outlet/>
                 </Container>
-            </footer>
+            </section>
         </>
     );
 }

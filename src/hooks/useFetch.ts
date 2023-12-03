@@ -1,7 +1,12 @@
 import {
-    getPokemonAbility, getPokemonDetail,
-    getPokemonEggGroup, getPokemonGeneration, getPokemonGrowthRate,
-    getPokemonSpecies, getPokemonType
+    getPokemonAbility,
+    getPokemonAllList,
+    getPokemonDetail,
+    getPokemonEggGroup,
+    getPokemonGeneration,
+    getPokemonGrowthRate,
+    getPokemonSpecies,
+    getPokemonType
 } from "../services/fetchPokemon.ts";
 import {useRecoilValue} from "recoil";
 import {languageState} from "../contexts/language.ts";
@@ -40,23 +45,18 @@ export function useFetch() {
 
     const findNameList = async () => {
         try {
-            const names = await Promise.all(
-                Array.from({length: lastId}, async (_, i) => {
-                    let name = await findName(i + 1);
+            // const regex = new RegExp(data, "gi");
 
-                    // name이 undefined면 다시 받아오기
-                    while (!name) {
-                        name = await findName(i + 1);
-                    }
+            const result = await getPokemonAllList(lastId)
+                .then((res) => res.results);
 
-                    return name;
+            return await Promise.all(
+                result.map(async (item, idx) => {
+                    return language === "ko" ? {id: idx + 1, name: await findName(item.name)} : {id: idx + 1, name: item.name};
                 })
             );
-
-            return names.map((name, idx) => ({value: `${idx + 1}`, label: `${name}`}));
         } catch (e) {
             console.error(e);
-            throw e;
         }
     }
 
@@ -128,6 +128,7 @@ export function useFetch() {
             return res.types;
         } catch (e) {
             console.error(e);
+            return [];
         }
     }
 

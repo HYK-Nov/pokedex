@@ -1,22 +1,23 @@
-import {useState} from 'react';
+import {lazy, Suspense, useState} from 'react';
 import {getPokemonList} from "../../services/fetchPokemon.ts";
 import {useInfiniteScroll} from "../../hooks/useInfiniteScroll.ts";
-import PokemonList from "../../components/common/PokemonList.tsx";
 import {useRecoilValue} from "recoil";
 import {lastIdState} from "../../contexts/lastId.ts";
 import {Loader, Stack} from "@mantine/core";
 import LoadingSkeleton from "../../components/common/LoadingSkeleton.tsx";
 import {useInfiniteQuery} from "@tanstack/react-query";
 
+const PokemonList = lazy(() => import("../../components/common/PokemonList.tsx"));
+
 function Main() {
     const lastId = useRecoilValue(lastIdState);
     const [scrolling, setScrolling] = useState(false);
 
-    const {data, isLoading, fetchNextPage, hasNextPage} = useInfiniteQuery({
+    const {data, fetchNextPage, hasNextPage} = useInfiniteQuery({
         queryKey: ['scroll'],
         queryFn: ({pageParam}) => getPokemonList(pageParam),
         getNextPageParam: (_lastPage, _allPages, lastPageParam) => {
-            return (lastPageParam + 24) <= lastId ? lastPageParam + 24 : undefined;
+            return (lastPageParam + 16) <= lastId ? lastPageParam + 16 : undefined;
         },
         initialPageParam: 0,
         select: result => result.pages.map(item => item.results).flat()
@@ -38,13 +39,13 @@ function Main() {
 
     return (
         <>
-            {isLoading && <LoadingSkeleton/>}
-
-            <Stack gap={"1.5rem"} align={"center"}>
-                {!isLoading && <PokemonList data={data!}/>}
-                {scrolling && <Loader/>}
-                {!isLoading && <div ref={ref} style={{height: "1px"}}/>}
-            </Stack>
+            <Suspense fallback={<LoadingSkeleton/>}>
+                <Stack gap={"1.5rem"} align={"center"}>
+                    <PokemonList data={data!}/>
+                    {scrolling && <Loader/>}
+                </Stack>
+            </Suspense>
+            <div ref={ref} style={{height: "1px"}}/>
         </>
     );
 }

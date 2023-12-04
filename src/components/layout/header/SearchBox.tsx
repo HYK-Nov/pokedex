@@ -23,7 +23,7 @@ function SearchBox() {
     const {data} = useQuery({
         queryKey: ['searchList', debouncedKeyword],
         queryFn: () => findNameList(debouncedKeyword),
-        enabled: searchKeyword !== "" && !isAutoSearch,
+        enabled: !!debouncedKeyword && !isAutoSearch,
         initialData: [],
         select: (res) => (res?.length && res.length > 10 ? res.slice(0, 9) : res) || [],
     });

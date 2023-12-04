@@ -1,6 +1,5 @@
 import {Box, Container, Flex, UnstyledButton} from "@mantine/core";
 import {useNavigate} from "react-router-dom";
-import SearchBox from "./header/SearchBox.tsx";
 import style from "../../styles/Header.module.scss";
 import {useRecoilValue} from "recoil";
 import {languageState} from "../../contexts/language.ts";
@@ -25,7 +24,6 @@ function Header() {
                         </div>
 
                         <div style={{display: "flex", gap: "1rem", alignItems: "center"}}>
-                            <SearchBox/>
                             <LanguageBtn/>
                         </div>
                     </div>

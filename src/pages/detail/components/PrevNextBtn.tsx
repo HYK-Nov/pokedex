@@ -1,6 +1,7 @@
 import {useNavigate} from "react-router-dom";
 import {Grid, Image, Stack, Text, UnstyledButton} from "@mantine/core";
 import {useMediaQuery} from "@mantine/hooks";
+import placeholder from '../../../assets/images/placeholder.webp';
 
 interface IProps {
     id: string | number;
@@ -19,7 +20,7 @@ function PrevNextBtn({id, name, current}: IProps) {
                     <Image src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`}
                            alt={name}
                            m={"auto"}
-                           fallbackSrc={`https://placehold.co/100x100?text=${name}`}
+                           fallbackSrc={placeholder}
                            loading={"lazy"}
                     />
                 </Grid.Col>

@@ -1,4 +1,4 @@
-import {lazy, Suspense, useState} from 'react';
+import {lazy, useState} from 'react';
 import {getPokemonList} from "../../services/fetchPokemon.ts";
 import {useInfiniteScroll} from "../../hooks/useInfiniteScroll.ts";
 import {useRecoilValue} from "recoil";
@@ -12,6 +12,7 @@ const PokemonList = lazy(() => import("../../components/common/PokemonList.tsx")
 function Main() {
     const lastId = useRecoilValue(lastIdState);
     const [scrolling, setScrolling] = useState(false);
+    const [showSkeleton, setShowSkeleton] = useState(true);
 
     const {data, fetchNextPage, hasNextPage} = useInfiniteQuery({
         queryKey: ['scroll'],
@@ -20,7 +21,10 @@ function Main() {
             return (lastPageParam + 16) <= lastId ? lastPageParam + 16 : undefined;
         },
         initialPageParam: 0,
-        select: result => result.pages.map(item => item.results).flat()
+        select: result => {
+            if (showSkeleton) setTimeout(() => setShowSkeleton(false), 300);
+            return result.pages.map(item => item.results).flat();
+        }
     })
 
     const ref = useInfiniteScroll(async (entry, observer) => {
@@ -39,13 +43,16 @@ function Main() {
 
     return (
         <>
-            <Suspense fallback={<LoadingSkeleton/>}>
-                <Stack gap={"1.5rem"} align={"center"}>
-                    <PokemonList data={data!}/>
-                    {scrolling && <Loader/>}
-                </Stack>
-            </Suspense>
-            <div ref={ref} style={{height: "1px"}}/>
+            {showSkeleton ?
+                <LoadingSkeleton/>
+                : <>
+                    <Stack gap={"1.5rem"} align={"center"}>
+                        <PokemonList data={data!}/>
+                        {scrolling && <Loader/>}
+                    </Stack>
+                    <div ref={ref} style={{height: "1px"}}/>
+                </>
+            }
         </>
     );
 }

@@ -8,6 +8,7 @@ import TypeBtn from "./TypeSetBtn.tsx";
 import {useQuery} from "@tanstack/react-query";
 import {languageState} from "../../contexts/language.ts";
 import {useEffect} from "react";
+import placeholder from '../../assets/images/placeholder.webp';
 
 function PokemonBtn({data}: { data: IPokemon }) {
     const language = useRecoilValue(languageState);
@@ -15,7 +16,7 @@ function PokemonBtn({data}: { data: IPokemon }) {
     const id = data.url.split("/")[6];
     const lasId = useRecoilValue(lastIdState);
 
-    const {findArtwork, findName, findTypes} = useFetch();
+    const {findName, findTypes} = useFetch();
     const {data: name, refetch: nameRefetch} = useQuery({
         queryKey: ['name', id],
         queryFn: () => findName(id),
@@ -25,11 +26,6 @@ function PokemonBtn({data}: { data: IPokemon }) {
         queryKey: ['types', id],
         queryFn: () => findTypes(id),
         initialData: [],
-    })
-    const {data: artwork} = useQuery({
-        queryKey: ['artwork', id],
-        queryFn: () => findArtwork(id),
-        initialData: "",
     })
 
     useEffect(() => {
@@ -46,10 +42,12 @@ function PokemonBtn({data}: { data: IPokemon }) {
                                 <Title size={"0.75rem"} style={{color: "gray"}}>No. {id}</Title>
                                 <Title order={4}>{name}</Title>
                             </Stack>
-                            <Image src={artwork} alt={data.name}
-                                   fallbackSrc={`https://placehold.co/100x100?text=${data.name}`}
-                                   loading={"lazy"}
-                                   style={{width: "60%", minWidth: "150px", maxWidth: "200px", margin: "auto"}}/>
+                            <Image
+                                src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`}
+                                fallbackSrc={placeholder}
+                                alt={data.name}
+                                loading={"lazy"}
+                                style={{width: "60%", minWidth: "150px", maxWidth: "200px", margin: "auto"}}/>
                             {types[0] && <TypeBtn types={types!}/>}
                         </Stack>
                     </Paper>

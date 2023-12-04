@@ -15,6 +15,7 @@ import BreedingTable from "./components/table/BreedingTable.tsx";
 import FlavorTextTable from "./components/table/FlavorTextTable.tsx";
 import {useQuery} from "@tanstack/react-query";
 import {languageState} from "../../contexts/language.ts";
+import placeholder from '../../assets/images/placeholder.webp';
 
 interface ILoaderData {
     detail: IPokemonDetail;
@@ -28,7 +29,7 @@ function Detail() {
     const lastId = useRecoilValue(lastIdState);
     const [curTab, setCurTab] = useState<string | null>("info");
 
-    const {findName, findArtwork} = useFetch();
+    const {findName} = useFetch();
     useEffect(() => {
         // id 변경시, 탭 초기화
         setCurTab("info");
@@ -52,11 +53,6 @@ function Detail() {
         enabled: (Number(id) + 1) <= lastId,
     })
 
-    const {data: artWork} = useQuery({
-        queryKey: ['artWork', id],
-        queryFn: () => findArtwork(id!),
-    })
-
     useEffect(() => {
         prevNameRefetch();
         curNameRefetch();
@@ -69,11 +65,13 @@ function Detail() {
             <Grid>
                 <Grid.Col span={{base: 12, sm: 4}}>
                     <Title pb={"1rem"}>{curName}</Title>
-                    <Image src={artWork} alt={curName}
-                           w={"80%"}
-                           m={"auto"}
-                           fallbackSrc={`https://placehold.co/300x300?text=${detail.name}`}
-                           loading={"lazy"}/>
+                    <Image
+                        src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`}
+                        alt={curName}
+                        w={"80%"}
+                        m={"auto"}
+                        fallbackSrc={placeholder}
+                        loading={"lazy"}/>
                 </Grid.Col>
                 <Grid.Col span={"auto"}>
                     <SimpleGrid cols={3} pb={"1.5rem"}>

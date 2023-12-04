@@ -30,6 +30,8 @@ export function useFetch() {
     }
 
     const findName = async (data: string | number) => {
+        if (Number(data) < 1) return "";
+
         try {
             const res = await getPokemonSpecies(data);
             if (res && res.names) {

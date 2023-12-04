@@ -1,11 +1,13 @@
 import {SimpleGrid, Skeleton} from "@mantine/core";
+import {useMediaQuery} from "@mantine/hooks";
 
 function LoadingSkeleton() {
-    const items = Array.from({length: 15}, (_, idx) =>
-        <Skeleton width={"100%"} height={"50vh"} key={idx}/>);
+    const isMobile = useMediaQuery(`(max-width: 36em)`);
+    const items = Array.from({length: isMobile ? 3 : 8}, (_, idx) =>
+        <Skeleton width={"100%"} mih={"300px"} mah={"350px"} key={idx}/>);
 
     return (
-        <SimpleGrid cols={{base: 1, sm: 3, md: 4}}>
+        <SimpleGrid cols={{base: 1, sm: 2, md: 4}}>
             {items}
         </SimpleGrid>
     );

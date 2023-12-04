@@ -12,7 +12,13 @@ import {IPokemon} from "../../ts/interface/pokemons.interfaces.ts";
 import LoadingSkeleton from "../../components/common/LoadingSkeleton.tsx";
 import {languageState} from "../../contexts/language.ts";
 
-const PokemonList = lazy(() => import("../../components/common/PokemonList.tsx"));
+const PokemonList = lazy(async () => {
+    const [module] = await Promise.all([
+        import("../../components/common/PokemonList.tsx"),
+        new Promise(resolve => setTimeout(resolve, 800))
+    ]);
+    return ({default: module.default});
+});
 
 function Category() {
     const language = useRecoilValue(languageState);
@@ -25,13 +31,15 @@ function Category() {
     const [shouldUpdateData, setShouldUpdateData] = useState(true);
 
     const {findMatchType, findMatchRegion} = useFetch();
-    const {data: typesResult} = useQuery({
+
+    const {data: typeResult, isPending: isTypeResultLoading} = useQuery({
         queryKey: ['typesResult', types],
         queryFn: () => findMatchType(types),
         enabled: shouldUpdateData,
         initialData: [],
-    });
-    const {data: regionResult} = useQuery({
+    })
+
+    const {data: regionResult, isPending: isRegionResultLoading} = useQuery({
         queryKey: ['regionResult', region],
         queryFn: () => findMatchRegion(REGION_NUM[region]),
         enabled: shouldUpdateData,
@@ -102,16 +110,18 @@ function Category() {
     }, [searchParams]);
 
     useEffect(() => {
-        if (shouldUpdateData) {
-            if (typesResult.length > 0 && regionResult.length > 0) {
-                setTotalData(typesResult.filter(v1 => regionResult.find(v2 => (v1.name === v2.name) && (Number(v1.url.split("/")[6]) <= lastId))));
-            } else if (typesResult.length > 0) {
-                setTotalData(typesResult.filter(v => Number(v.url.split("/")[6]) <= lastId));
-            } else if (regionResult.length > 0) {
-                setTotalData(regionResult.filter(v => Number(v.url.split("/")[6]) <= lastId));
+        if (shouldUpdateData && !isTypeResultLoading && !isRegionResultLoading) {
+            if (typeResult && regionResult) {
+                if (typeResult.length > 0 && regionResult.length > 0) {
+                    setTotalData(typeResult.filter(v1 => regionResult.find(v2 => (v1.name === v2.name) && (Number(v1.url.split("/")[6]) <= lastId))));
+                } else if (typeResult.length > 0) {
+                    setTotalData(typeResult.filter(v => Number(v.url.split("/")[6]) <= lastId));
+                } else if (regionResult.length > 0) {
+                    setTotalData(regionResult.filter(v => Number(v.url.split("/")[6]) <= lastId));
+                }
             }
         }
-    }, [typesResult, regionResult]);
+    }, [typeResult, regionResult, shouldUpdateData]);
 
     return (
         <>
@@ -149,9 +159,11 @@ function Category() {
             </Paper>
 
             <div style={{margin: "3rem auto"}}>
-                <Suspense fallback={<LoadingSkeleton/>}>
-                    <PokemonList data={totalData}/>
-                </Suspense>
+                {searchParams.size > 0 &&
+                    <Suspense fallback={<LoadingSkeleton/>}>
+                        <PokemonList data={totalData}/>
+                    </Suspense>
+                }
             </div>
         </>
     );

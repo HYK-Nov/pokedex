@@ -25,7 +25,7 @@ function Layout() {
             <div style={{position: "fixed", zIndex: "999", bottom: "2vh", right: "2vw"}}>
                 <ScrollToTopBtn/>
             </div>
-            <section style={{padding: "5vh 0", backgroundColor: "#eeeeee", minHeight: window.innerHeight - 65}}>
+            <section style={{padding: "5vh 0", backgroundColor: "#f4f4f4", minHeight: window.innerHeight - 65}}>
                 <Container size={"lg"}>
                     <Outlet/>
                 </Container>

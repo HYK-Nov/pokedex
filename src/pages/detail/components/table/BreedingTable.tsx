@@ -60,8 +60,8 @@ function BreedingTable({species}: { species: IPokemonSpecies }) {
                             {eggGroup.length > 1 && `, ${eggGroup[1]}`}
                         </Table.Td>}
 
-                    {/* 부화 걸음수 */}
-                    <Table.Td align={"center"}>{(255 * (species.hatch_counter + 1)).toLocaleString()}</Table.Td>
+                    {/* 부화 카운트 */}
+                    <Table.Td align={"center"}>{species.hatch_counter}</Table.Td>
 
                     {/* 최대 경험치량 */}
                     <Table.Td align={"center"}>
@@ -69,7 +69,7 @@ function BreedingTable({species}: { species: IPokemonSpecies }) {
                     </Table.Td>
 
                     {/* 포획률 */}
-                    <Table.Td align={"center"}>{((species.capture_rate / 256) * 100).toFixed(1)}%</Table.Td>
+                    <Table.Td align={"center"}>{species.capture_rate}</Table.Td>
                 </Table.Tr>
             </Table.Tbody>
         </Table>

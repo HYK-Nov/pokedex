@@ -1,6 +1,5 @@
 import {
     getPokemonAbility,
-    getPokemonAllList,
     getPokemonDetail,
     getPokemonEggGroup,
     getPokemonGeneration,
@@ -43,18 +42,19 @@ export function useFetch() {
         }
     }
 
-    const findNameList = async () => {
+    const findNameList = async (data: string) => {
+        if (!data) return;
+
         try {
-            // const regex = new RegExp(data, "gi");
-
-            const result = await getPokemonAllList(lastId)
-                .then((res) => res.results);
-
-            return await Promise.all(
-                result.map(async (item, idx) => {
-                    return language === "ko" ? {id: idx + 1, name: await findName(item.name)} : {id: idx + 1, name: item.name};
+            const regex = new RegExp(data, "gi");
+            const result = await Promise.all(
+                Array.from({length: lastId}, async (_, i) => {
+                    const name = await findName(i + 1);
+                    return name && name.match(regex) ? {id: i + 1, name: name} : null;
                 })
             );
+
+            return result.filter((item) => item !== null);
         } catch (e) {
             console.error(e);
         }

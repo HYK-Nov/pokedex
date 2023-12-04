@@ -1,11 +1,10 @@
 import {Box, Container, Flex, UnstyledButton} from "@mantine/core";
 import {useNavigate} from "react-router-dom";
-// import SearchBox from "./header/SearchBox.tsx";
+import SearchBox from "./header/SearchBox.tsx";
 import style from "../../styles/Header.module.scss";
 import {useRecoilValue} from "recoil";
 import {languageState} from "../../contexts/language.ts";
 import LanguageBtn from "./header/LanguageBtn.tsx";
-import SearchBox from "./header/SearchBox.tsx";
 
 function Header() {
     const language = useRecoilValue(languageState);

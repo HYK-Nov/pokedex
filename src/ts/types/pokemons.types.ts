@@ -1,22 +1,22 @@
-export const TYPE_COLORS: { [key: string]: string } = {
-    normal: "#A8A77A",
-    fire: "#EE8130",
-    water: "#6390F0",
-    grass: "#7AC74C",
-    flying: "#A98FF3",
-    fighting: "#C22E28",
-    poison: "#A33EA1",
-    electric: "#F7D02C",
-    ground: "#E2BF65",
-    rock: "#B6A136",
-    psychic: "#F95587",
-    ice: "#96D9D6",
-    bug: "#A6B91A",
-    ghost: "#735797",
-    steel: "#B7B7CE",
-    dragon: "#6F35FC",
-    dark: "#705746",
-    fairy: "#D685AD",
+export const TYPE_COLORS: { [key: number]: string } = {
+    1: "#A8A77A",   // normal
+    2: "#C22E28",   // fighting
+    3: "#A98FF3",   // flying
+    4: "#A33EA1",   // poison
+    5: "#E2BF65",   // ground
+    6: "#B6A136",   // rock
+    7: "#A6B91A",   // bug
+    8: "#735797",   // ghost
+    9: "#B7B7CE",   // steel
+    10: "#EE8130",  // fire
+    11: "#6390F0",  // water
+    12: "#7AC74C",  // grass
+    13: "#F7D02C",  // electric
+    14: "#F95587",  // psychic
+    15: "#96D9D6",  // ice
+    16: "#6F35FC",  // dragon
+    17: "#705746",  // dark
+    18: "#D685AD",  // fairy
 } as const;
 
 export const TYPE_KO: { [key: string]: string } = {

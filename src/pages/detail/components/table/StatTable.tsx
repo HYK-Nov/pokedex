@@ -1,10 +1,18 @@
 import {Table, Title} from "@mantine/core";
-import {IPokemonDetail} from "../../../../ts/interface/pokemons.interfaces.ts";
+import {IPokemonStat} from "../../../../ts/interface/pokemons.interfaces.ts";
 import {useRecoilValue} from "recoil";
 import {languageState} from "../../../../contexts/language.ts";
 
-function StatTable({detail}: { detail: IPokemonDetail }) {
+function StatTable({stat}: { stat: IPokemonStat[] }) {
     const language = useRecoilValue(languageState);
+
+    const statRows = stat?.map((item, idx) => {
+        if (item.stats[0]) {
+            return (
+                <Table.Td align={"center"} key={idx}>{item.stats[0].base_stat}</Table.Td>
+            )
+        }else return null;
+    })
 
     return (
         <Table layout={"fixed"} withColumnBorders mb={"1rem"}>
@@ -25,12 +33,7 @@ function StatTable({detail}: { detail: IPokemonDetail }) {
             </Table.Thead>
             <Table.Tbody>
                 <Table.Tr>
-                    <Table.Td align={"center"}>{detail.stats[0].base_stat}</Table.Td>
-                    <Table.Td align={"center"}>{detail.stats[1].base_stat}</Table.Td>
-                    <Table.Td align={"center"}>{detail.stats[2].base_stat}</Table.Td>
-                    <Table.Td align={"center"}>{detail.stats[3].base_stat}</Table.Td>
-                    <Table.Td align={"center"}>{detail.stats[4].base_stat}</Table.Td>
-                    <Table.Td align={"center"}>{detail.stats[5].base_stat}</Table.Td>
+                    {statRows}
                 </Table.Tr>
             </Table.Tbody>
         </Table>

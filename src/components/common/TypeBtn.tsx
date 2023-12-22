@@ -6,19 +6,20 @@ import {languageState} from "../../contexts/language.ts";
 import React from "react";
 
 interface IProps {
+    id: number;
     type: string;
     disabled?: boolean;
     onClick?: (e: React.MouseEvent | null) => void;
     onlyIcon?: boolean;
 }
 
-function TypeBtn({type, disabled, onClick, onlyIcon}: IProps) {
+function TypeBtn({id, type, disabled, onClick, onlyIcon}: IProps) {
     const language = useRecoilValue(languageState);
 
     return (
         <>
             {!disabled ?
-                <Badge color={TYPE_COLORS[type]}
+                <Badge color={TYPE_COLORS[id]}
                        radius={"sm"}
                        h={"1.5rem"}
                        fullWidth

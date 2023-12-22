@@ -14,10 +14,12 @@ function TypeSetBtn({types}: { types: IPokemonType[] }) {
 
     return (
         <SimpleGrid cols={2}>
-            <TypeBtn type={types[0].type?.name}
+            <TypeBtn id={types[0].type?.id}
+                     type={types[0].type?.name}
                      onClick={(e) => handleOnClick(e!, types[0].type?.name)}/>
             {types.length > 1 &&
-                <TypeBtn type={types[1].type?.name}
+                <TypeBtn id={types[1].type?.id}
+                         type={types[1].type?.name}
                          onClick={(e) => handleOnClick(e!, types[1].type?.name)}/>}
         </SimpleGrid>
     );

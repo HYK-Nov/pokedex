@@ -248,21 +248,6 @@ export interface IPokemonSpecies {
     }
 }
 
-export interface IPokemonGrowthRate {
-    descriptions: {
-        description: string;
-        language: IPokemon;
-    }[];
-    formula: string;
-    id: number;
-    levels: {
-        experience: number;
-        level: number;
-    }[];
-    name: string;
-    pokemon_species: IPokemon[];
-}
-
 interface IPokemonSprite {
     back_default?: string | null;
     back_female?: string | null;
@@ -277,32 +262,17 @@ interface IPokemonSprite {
 }
 
 export interface IPokemonType {
-    slot: number;
     type: {
+        id: number;
         name: string;
-        url: string;
     }
 }
 
-export interface IPokemonAbility {
-    slot: number;
-    is_hidden: boolean;
-    ability: {
-        name: string;
-        url: string;
-    };
-}
-
 export interface IPokemonFlavorText {
-    flavor_text: string;
-    language: {
-        name: string;
-        url: string;
-    };
+    text: string;
     version: {
         name: string;
-        url: string;
-    };
+    }
 }
 
 export interface IPokemonTypeDetail {
@@ -380,4 +350,54 @@ export interface IPokemonPokedex {
     }[];
     region: IPokemon;
     version_groups: IPokemon[];
+}
+
+export interface IPokemonInfo {
+    base_experience: number;
+    height: number;
+    specy: {
+        capture_rate: number;
+        egg_group: {
+            egg_groups: {
+                names: {
+                    name: string;
+                }[]
+            }
+        }[];
+        gender_rate: number;
+        hatch_counter: number;
+        names: {
+            genus: string;
+            language: {
+                name: string;
+            };
+            name: string;
+        }[]
+    };
+    types: IPokemonType[];
+    weight: number;
+}
+
+export interface IPokemonAbility {
+    abilities: {
+        ability: {
+            name: string;
+        }[];
+        ability_text: {
+            text: string;
+        }[];
+    }
+    is_hidden: boolean;
+}
+
+export interface IPokemonStat {
+    stats: {
+        base_stat: number;
+    }[]
+}
+
+export interface IPokemonGrowthRate {
+    experiences: {
+        experience: number;
+    }[]
 }

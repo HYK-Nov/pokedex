@@ -14,8 +14,8 @@ import BreedingTable from "./components/table/BreedingTable.tsx";
 import FlavorTextTable from "./components/table/FlavorTextTable.tsx";
 import {languageState} from "../../contexts/language.ts";
 import placeholder from '../../assets/images/placeholder.webp';
-import {useSuspenseQuery} from '@apollo/client';
-import {GET_PKM_DETAIL} from "../../services/queryPokemon.ts";
+import {useSuspenseQuery, useQuery} from '@apollo/client';
+import {GET_PKM_DETAIL, GET_PREV_NEXT_NAME} from "../../services/queryPokemon.ts";
 
 interface ILoaderData {
     detail: IPokemonDetail;
@@ -25,50 +25,41 @@ interface ILoaderData {
 function Detail() {
     const language = useRecoilValue(languageState);
     const {detail, species} = useLoaderData() as ILoaderData;
-    const id = detail.species.url.split("/").slice(6, 7).pop();
+    const id = Number(detail.species.url.split("/").slice(6, 7).pop());
     const lastId = useRecoilValue(lastIdState);
     const [curTab, setCurTab] = useState<string | null>("info");
 
-    const {data} = useSuspenseQuery<any>(GET_PKM_DETAIL, {
+    const {data, refetch} = useSuspenseQuery<any>(GET_PKM_DETAIL, {
         variables: {
             id: id,
             lan: language,
         }
     });
+
+    // 포켓몬 prev, cur, next 이름 가져오기
+    const {data: nameData, refetch: nameRefetch} = useQuery(GET_PREV_NEXT_NAME, {
+        variables: {
+            prevId: id - 1,
+            nextId: id + 1,
+            lan: language,
+        }
+    })
+
     const [name, setName] = useState(
         data.pokemon[0].specy.names.find((item: any) => item.language.name === language).name
     )
 
-    console.log(data);
+    console.log(nameData);
 
     useEffect(() => {
         // id 변경시, 탭 초기화
         setCurTab("info");
     }, [id]);
 
-    /*// 포켓몬 cur, prev, next 이름 가져오기
-    const {data: prevName, refetch: prevNameRefetch} = useQuery({
-        queryKey: ['prevName', id],
-        queryFn: () => findName(Number(id) - 1),
-        enabled: (Number(id) - 1) > 0,
-    })
-
-    const {data: curName, refetch: curNameRefetch} = useQuery({
-        queryKey: ['curName', id],
-        queryFn: () => findName(id!),
-    })
-
-    const {data: nextName, refetch: nextNameRefetch} = useQuery({
-        queryKey: ['nextName', id],
-        queryFn: () => findName(Number(id) + 1),
-        enabled: (Number(id) + 1) <= lastId,
-    })
-
     useEffect(() => {
-        prevNameRefetch();
-        curNameRefetch();
-        nextNameRefetch();
-    }, [language]);*/
+        refetch();
+        nameRefetch();
+    }, [language]);
 
     return (
         <>

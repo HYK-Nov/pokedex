@@ -61,3 +61,12 @@ export const GET_PKM_DETAIL = gql`
           }
     }
 `;
+
+export const GET_PREV_NEXT_NAME = gql`
+    query GetPkmNames($prevId: Int, $nextId: Int, $lan: String) {
+        names: pokemon_v2_pokemonspeciesname(where: {pokemon_species_id: {_gte: $prevId, _lte: $nextId}, pokemon_v2_language: {name: {_eq: $lan}}}) {
+            name
+            id: pokemon_species_id
+        }
+    }
+`;

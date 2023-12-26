@@ -401,3 +401,12 @@ export interface IPokemonGrowthRate {
         experience: number;
     }[]
 }
+
+export interface IPokemonName {
+    id: number;
+    name: string;
+}
+
+export interface IPokemonNames {
+    names: IPokemonName[],
+}

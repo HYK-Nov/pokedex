@@ -4,6 +4,7 @@ import style from "../../styles/Header.module.scss";
 import {useRecoilValue} from "recoil";
 import {languageState} from "../../contexts/language.ts";
 import LanguageBtn from "./header/LanguageBtn.tsx";
+import SearchBox from "./header/SearchBox.tsx";
 
 function Header() {
     const language = useRecoilValue(languageState);
@@ -24,6 +25,7 @@ function Header() {
                         </div>
 
                         <div style={{display: "flex", gap: "1rem", alignItems: "center"}}>
+                            <SearchBox/>
                             <LanguageBtn/>
                         </div>
                     </div>

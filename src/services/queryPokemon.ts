@@ -58,13 +58,22 @@ export const GET_PKM_DETAIL = gql`
             experiences: pokemon_v2_experiences {
               experience
             }
-          }
+        }
     }
 `;
 
 export const GET_PREV_NEXT_NAME = gql`
     query GetPkmNames($prevId: Int, $nextId: Int, $lan: String) {
         names: pokemon_v2_pokemonspeciesname(where: {pokemon_species_id: {_gte: $prevId, _lte: $nextId}, pokemon_v2_language: {name: {_eq: $lan}}}) {
+            name
+            id: pokemon_species_id
+        }
+    }
+`;
+
+export const GET_ALL_NAMES = gql`
+    query GetAllNames($lastId: Int, $lan: String) {
+        names: pokemon_v2_pokemonspeciesname(where: {pokemon_species_id: {_gte: 1, _lte: $lastId}, pokemon_v2_language: {name: {_eq: $lan}}}) {
             name
             id: pokemon_species_id
         }

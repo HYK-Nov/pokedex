@@ -1,14 +1,21 @@
+import React, {useEffect, useRef, useState} from "react";
 import {ActionIcon, Button, Input, Modal, ScrollArea, Stack} from "@mantine/core";
 import {IconSearch} from "@tabler/icons-react";
 import {useNavigate} from "react-router-dom";
-import React, {useEffect, useRef, useState} from "react";
 import {useMediaQuery} from "@mantine/hooks";
-import {useQuery} from "@tanstack/react-query";
 import {useFetch} from "../../../hooks/useFetch.ts";
 import {useDebounce} from "../../../hooks/useDebounce.ts";
 import style from "../../../styles/SearchBox.module.scss";
+import {useQuery} from "@apollo/client";
+import {GET_ALL_NAMES} from "../../../services/queryPokemon.ts";
+import {useRecoilValue} from "recoil";
+import {languageState} from "../../../contexts/language.ts";
+import {lastIdState} from "../../../contexts/lastId.ts";
+import {IPokemonNames} from "../../../ts/interface/pokemons.interfaces.ts";
 
 function SearchBox() {
+    const language = useRecoilValue(languageState);
+    const lastId = useRecoilValue(lastIdState);
     const isMobile = useMediaQuery(`(max-width: 36em)`);
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
@@ -20,13 +27,20 @@ function SearchBox() {
     const debouncedKeyword = useDebounce(searchKeyword, 200);
 
     const {findNameList} = useFetch();
-    const {data} = useQuery({
+    /*const {data} = useQuery({
         queryKey: ['searchList', debouncedKeyword],
         queryFn: () => findNameList(debouncedKeyword),
         enabled: !!debouncedKeyword && !isAutoSearch,
         initialData: [],
         select: (res) => (res?.length && res.length > 10 ? res.slice(0, 9) : res) || [],
-    });
+    });*/
+
+    const {data} = useQuery<IPokemonNames>(GET_ALL_NAMES, {
+        variables: {
+            lastId: lastId,
+            lan: language,
+        },
+    })
 
     const handleModalClose = () => {
         setOpen(prev => !prev);
@@ -37,9 +51,9 @@ function SearchBox() {
     }
 
     const changeSelectItem = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (data!.length === 0) return;
+        if (data?.names.length === 0) return;
 
-        const lastIndex = data!.length - 1;
+        const lastIndex = data?.names.length - 1;
 
         switch (e.key) {
             case 'ArrowDown':
@@ -61,7 +75,7 @@ function SearchBox() {
         }
     }
 
-    const items = data!.map((item, idx) => (
+    const items = data?.names.map((item, idx) => (
         <Button key={idx}
                 variant={"subtle"}
                 fullWidth

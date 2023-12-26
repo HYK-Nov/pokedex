@@ -1,6 +1,6 @@
 import {useLoaderData} from "react-router-dom";
 import {
-    IPokemonDetail, IPokemonSpecies,
+    IPokemonDetail, IPokemonName, IPokemonSpecies,
 } from "../../ts/interface/pokemons.interfaces.ts";
 import {Suspense, useEffect, useState} from "react";
 import {Grid, Image, Paper, SimpleGrid, Tabs, Title} from "@mantine/core";
@@ -26,7 +26,6 @@ function Detail() {
     const language = useRecoilValue(languageState);
     const {detail, species} = useLoaderData() as ILoaderData;
     const id = Number(detail.species.url.split("/").slice(6, 7).pop());
-    const lastId = useRecoilValue(lastIdState);
     const [curTab, setCurTab] = useState<string | null>("info");
 
     const {data, refetch} = useSuspenseQuery<any>(GET_PKM_DETAIL, {
@@ -45,11 +44,7 @@ function Detail() {
         }
     })
 
-    const [name, setName] = useState(
-        data.pokemon[0].specy.names.find((item: any) => item.language.name === language).name
-    )
-
-    console.log(nameData);
+    const name = data.pokemon[0].specy.names.find((item: any) => item.language.name === language).name;
 
     useEffect(() => {
         // id 변경시, 탭 초기화
@@ -78,11 +73,20 @@ function Detail() {
                                 loading={"lazy"}/>
                         </Grid.Col>
                         <Grid.Col span={"auto"}>
-                            {/*<SimpleGrid cols={3} pb={"1.5rem"}>
-                        {prevName && <PrevNextBtn id={Number(id) - 1} name={prevName}/>}
-                        <PrevNextBtn id={id!} name={curName!} current/>
-                        {nextName && <PrevNextBtn id={Number(id) + 1} name={nextName}/>}
-                    </SimpleGrid>*/}
+                            <SimpleGrid cols={3} pb={"1.5rem"}>
+                                {nameData &&
+                                    <>
+                                        {/*{nameData.names && <PrevNextBtn id={Number(id) - 1} name={prevName}/>}
+                                <PrevNextBtn id={id} name={curName!} current/>
+                                {nextName && <PrevNextBtn id={Number(id) + 1} name={nextName}/>}*/}
+                                        {nameData.names[0].id === id - 1 ?
+                                            <PrevNextBtn id={id - 1} name={nameData.names[0].name}/> : <div></div>}
+                                        <PrevNextBtn id={id}
+                                                     name={nameData && nameData.names && nameData.names[1]?.id === id ? nameData.names[1]?.name : nameData.names[0]?.name}
+                                                     current/>
+                                    </>
+                                }
+                            </SimpleGrid>
 
                             <Tabs value={curTab} onChange={setCurTab}>
                                 <Tabs.List grow>

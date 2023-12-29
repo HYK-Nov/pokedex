@@ -20,14 +20,13 @@ function PrevNextBtn({id, name, current}: IProps) {
                     <Image src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`}
                            alt={name}
                            m={"auto"}
-                           fallbackSrc={placeholder}
-                           loading={"lazy"}
-                    />
+                           fallbackSrc={placeholder}/>
                 </Grid.Col>
                 <Grid.Col span={{base: "auto", sm: 6}} style={{textAlign: isMobile ? "center" : "left"}}>
                     <Stack gap={"0.5rem"}>
                         <Text size={"0.75rem"} fw={current ? "bold" : "normal"}>No. {id}</Text>
-                        <Text size={"1.1rem"} fw={current ? "bold" : "normal"} style={{wordBreak:"break-word"}}>{name}</Text>
+                        <Text size={"1.1rem"} fw={current ? "bold" : "normal"}
+                              style={{wordBreak: "break-word"}}>{name}</Text>
                     </Stack>
                 </Grid.Col>
             </Grid>

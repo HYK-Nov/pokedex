@@ -1,14 +1,4 @@
-export interface IPokemon {
-    name: string;
-    url: string;
-}
 
-export interface IPokemonList {
-    count: number;
-    next: string;
-    previous: string;
-    results: IPokemon[];
-}
 
 export interface IPokemonDetail {
     id: number;
@@ -350,6 +340,20 @@ export interface IPokemonPokedex {
     }[];
     region: IPokemon;
     version_groups: IPokemon[];
+}
+
+export interface IPokemon {
+    name: string;
+    id: number;
+    specy: {
+        pokemons: {
+            types: IPokemonType[];
+        }[]
+    }
+}
+
+export interface IPokemonList {
+    pokemon: IPokemon[];
 }
 
 export interface IPokemonInfo {

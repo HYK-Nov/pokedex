@@ -1,5 +1,14 @@
+@font-face {
+  font-family: 'NanumSquareNeo';
+  src: url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-bRg.eot);
+  src: url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-bRg.eot?#iefix) format("embedded-opentype"), url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-bRg.woff) format("woff"), url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-bRg.ttf) format("truetype");
+  font-display: swap;
+  font-weight: normal;
+  font-style: normal;
+}
+
 * {
-  font-family: "NanumSquareNeo", sans-serif !important;
+  font-family: "NanumSquareNeo", sans-serif;
   text-decoration: none;
   color: inherit;
   word-break: break-word;

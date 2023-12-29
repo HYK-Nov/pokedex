@@ -1,11 +1,8 @@
-import {useLoaderData} from "react-router-dom";
-import {
-    IPokemonDetail, IPokemonName, IPokemonSpecies,
-} from "../../ts/interface/pokemons.interfaces.ts";
-import {Suspense, useEffect, useState} from "react";
-import {Grid, Image, Paper, SimpleGrid, Tabs, Title} from "@mantine/core";
+import {useLocation} from "react-router-dom";
+import {IPokemonNames} from "../../ts/interface/pokemons.interfaces.ts";
+import {useEffect, useState} from "react";
+import {Grid, Image, LoadingOverlay, Paper, SimpleGrid, Tabs} from "@mantine/core";
 import {useRecoilValue} from "recoil";
-import {lastIdState} from "../../contexts/lastId.ts";
 import PrevNextBtn from "./components/PrevNextBtn.tsx";
 import InfoTable from "./components/table/InfoTable.tsx";
 import AbilityTable from "./components/table/AbilityTable.tsx";
@@ -14,21 +11,16 @@ import BreedingTable from "./components/table/BreedingTable.tsx";
 import FlavorTextTable from "./components/table/FlavorTextTable.tsx";
 import {languageState} from "../../contexts/language.ts";
 import placeholder from '../../assets/images/placeholder.webp';
-import {useSuspenseQuery, useQuery} from '@apollo/client';
+import {useQuery} from '@apollo/client';
 import {GET_PKM_DETAIL, GET_PREV_NEXT_NAME} from "../../services/queryPokemon.ts";
-
-interface ILoaderData {
-    detail: IPokemonDetail;
-    species: IPokemonSpecies;
-}
 
 function Detail() {
     const language = useRecoilValue(languageState);
-    const {detail, species} = useLoaderData() as ILoaderData;
-    const id = Number(detail.species.url.split("/").slice(6, 7).pop());
+    const location = useLocation();
+    const id = Number(location.pathname.slice(1));
     const [curTab, setCurTab] = useState<string | null>("info");
 
-    const {data, refetch} = useSuspenseQuery<any>(GET_PKM_DETAIL, {
+    const {data, refetch, loading} = useQuery<any>(GET_PKM_DETAIL, {
         variables: {
             id: id,
             lan: language,
@@ -36,7 +28,7 @@ function Detail() {
     });
 
     // 포켓몬 prev, cur, next 이름 가져오기
-    const {data: nameData, refetch: nameRefetch} = useQuery(GET_PREV_NEXT_NAME, {
+    const {data: nameData, refetch: nameRefetch} = useQuery<IPokemonNames>(GET_PREV_NEXT_NAME, {
         variables: {
             prevId: id - 1,
             nextId: id + 1,
@@ -44,7 +36,7 @@ function Detail() {
         }
     })
 
-    const name = data.pokemon[0].specy.names.find((item: any) => item.language.name === language).name;
+    const name = data?.pokemon[0].specy.names.find((item: any) => item.language.name === language).name;
 
     useEffect(() => {
         // id 변경시, 탭 초기화
@@ -58,32 +50,38 @@ function Detail() {
 
     return (
         <>
-            <Suspense fallback={<div>Loading...</div>}>
-                <Paper withBorder p={"2rem"}>
+            <LoadingOverlay visible={loading} zIndex={1000} overlayProps={{radius: "sm", blur: 1}}/>
 
+            <Paper withBorder p={"2rem"} mih={"80vh"}>
+                {data &&
                     <Grid>
                         <Grid.Col span={{base: 12, sm: 4}}>
-                            <Title pb={"1rem"}>{name}</Title>
+                            <b style={{fontSize:'2rem'}}>{name}</b>
                             <Image
                                 src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`}
                                 alt={name}
-                                w={"80%"}
+                                w={"70%"}
                                 m={"auto"}
+                                pt={"2rem"}
                                 fallbackSrc={placeholder}
-                                loading={"lazy"}/>
+                            />
                         </Grid.Col>
                         <Grid.Col span={"auto"}>
                             <SimpleGrid cols={3} pb={"1.5rem"}>
                                 {nameData &&
                                     <>
-                                        {/*{nameData.names && <PrevNextBtn id={Number(id) - 1} name={prevName}/>}
-                                <PrevNextBtn id={id} name={curName!} current/>
-                                {nextName && <PrevNextBtn id={Number(id) + 1} name={nextName}/>}*/}
+                                        {/* prev */}
                                         {nameData.names[0].id === id - 1 ?
                                             <PrevNextBtn id={id - 1} name={nameData.names[0].name}/> : <div></div>}
+                                        {/* cur */}
                                         <PrevNextBtn id={id}
                                                      name={nameData && nameData.names && nameData.names[1]?.id === id ? nameData.names[1]?.name : nameData.names[0]?.name}
                                                      current/>
+                                        {/* next */}
+                                        {nameData.names[1]?.id === id + 1 &&
+                                            <PrevNextBtn id={id + 1} name={nameData.names[1]?.name}/>}
+                                        {nameData.names[2]?.id === id + 1 &&
+                                            <PrevNextBtn id={id + 1} name={nameData.names[2]?.name}/>}
                                     </>
                                 }
                             </SimpleGrid>
@@ -121,8 +119,8 @@ function Detail() {
                             </Tabs>
                         </Grid.Col>
                     </Grid>
-                </Paper>
-            </Suspense>
+                }
+            </Paper>
         </>
     )
 }

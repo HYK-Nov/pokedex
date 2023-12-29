@@ -1,15 +1,11 @@
 import {
-    getPokemonAbility,
     getPokemonDetail,
-    getPokemonEggGroup,
     getPokemonGeneration,
-    getPokemonGrowthRate,
     getPokemonSpecies,
-    getPokemonType
 } from "../services/fetchPokemon.ts";
 import {useRecoilValue} from "recoil";
 import {languageState} from "../contexts/language.ts";
-import {IPokemon, IPokemonAbility, IPokemonSpecies} from "../ts/interface/pokemons.interfaces.ts";
+import {IPokemonSpecies} from "../ts/interface/pokemons.interfaces.ts";
 import {lastIdState} from "../contexts/lastId.ts";
 
 export function useFetch() {
@@ -66,7 +62,7 @@ export function useFetch() {
         return data.genera.find((item) => item.language.name === language)?.genus;
     }
 
-    const findAbilities = async (data: IPokemonAbility[]) => {
+   /* const findAbilities = async (data: IPokemonAbility[]) => {
         try {
             const promises = data.map(async (item) => {
                 const res = await getPokemonAbility(item.ability.url.split("/")[6]);
@@ -89,9 +85,9 @@ export function useFetch() {
             console.error(e);
             return [];
         }
-    }
+    }*/
 
-    const findEggGroups = async (data: IPokemon[]) => {
+    /*const findEggGroups = async (data: IPokemon[]) => {
         try {
             const promises = data.map(async (item) => {
                 const res = await getPokemonEggGroup(item.url.split("/")[6]);
@@ -105,24 +101,24 @@ export function useFetch() {
             console.error(e);
             return [];
         }
-    }
+    }*/
 
-    const findExp = async (data: IPokemon) => {
+    /*const findExp = async (data: IPokemon) => {
         try {
             const res = await getPokemonGrowthRate(data.url.split("/")[6]);
             return res.levels.pop().experience;
         } catch (e) {
             console.error(e);
         }
-    }
+    }*/
 
-    const findFlavorTexts = async (data: IPokemonSpecies) => {
+    /*const findFlavorTexts = async (data: IPokemonSpecies) => {
         try {
             return data.flavor_text_entries.filter((item) => item.language.name === language);
         } catch (e) {
             console.error(e);
         }
-    }
+    }*/
 
     const findTypes = async (data: string | number) => {
         try {
@@ -134,7 +130,7 @@ export function useFetch() {
         }
     }
 
-    const findMatchType = async (data: string[] | number[]) => {
+    /*const findMatchType = async (data: string[] | number[]) => {
         try {
             if (data.length === 1) {
                 const res = await getPokemonType(data[0]);
@@ -152,7 +148,7 @@ export function useFetch() {
             console.error(e);
             return [];
         }
-    }
+    }*/
 
     const findMatchRegion = async (data: string) => {
         try {
@@ -171,13 +167,8 @@ export function useFetch() {
         findArtwork,
         findTypes,
         findId,
-        findFlavorTexts,
         findGenus,
-        findAbilities,
-        findEggGroups,
-        findExp,
         findNameList,
-        findMatchType,
         findMatchRegion
     }
 }

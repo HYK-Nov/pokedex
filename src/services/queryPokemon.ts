@@ -79,3 +79,22 @@ export const GET_ALL_NAMES = gql`
         }
     }
 `;
+
+export const GET_SCROLL_CONTENTS = gql`
+    query GetScrollContents($lastPage: Int, $nextPage: Int, $lan: String) {
+      pokemon: pokemon_v2_pokemonspeciesname(where: {pokemon_species_id: {_gt: $lastPage, _lte: $nextPage}, pokemon_v2_language: {name: {_eq: $lan}}}) {
+        name
+        id: pokemon_species_id
+        specy: pokemon_v2_pokemonspecy {
+          pokemons: pokemon_v2_pokemons {
+            types: pokemon_v2_pokemontypes {
+              type:pokemon_v2_type {
+                name
+                id
+              }
+            }
+          }
+        }
+      }
+}
+`;

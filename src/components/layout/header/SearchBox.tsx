@@ -1,17 +1,15 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useMemo, useRef, useState} from "react";
 import {ActionIcon, Button, Input, Modal, ScrollArea, Stack} from "@mantine/core";
 import {IconSearch} from "@tabler/icons-react";
 import {useNavigate} from "react-router-dom";
 import {useMediaQuery} from "@mantine/hooks";
-import {useFetch} from "../../../hooks/useFetch.ts";
-import {useDebounce} from "../../../hooks/useDebounce.ts";
 import style from "../../../styles/SearchBox.module.scss";
 import {useQuery} from "@apollo/client";
 import {GET_ALL_NAMES} from "../../../services/queryPokemon.ts";
 import {useRecoilValue} from "recoil";
 import {languageState} from "../../../contexts/language.ts";
 import {lastIdState} from "../../../contexts/lastId.ts";
-import {IPokemonNames} from "../../../ts/interface/pokemons.interfaces.ts";
+import {IPokemonName, IPokemonNames} from "../../../ts/interface/pokemons.interfaces.ts";
 
 function SearchBox() {
     const language = useRecoilValue(languageState);
@@ -20,27 +18,22 @@ function SearchBox() {
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
     const [isAutoSearch, setIsAutoSearch] = useState(false);
+    const [filteredData, setFilteredData] = useState<IPokemonName[]>();
     const [searchKeyword, setSearchKeyword] = useState("");
     const [autoSearchKeyword, setAutoSearchKeyword] = useState("");
     const [focusIdx, setFocusIdx] = useState(-1);
     const focusRef = useRef<HTMLButtonElement | null>(null);
-    const debouncedKeyword = useDebounce(searchKeyword, 200);
 
-    const {findNameList} = useFetch();
-    /*const {data} = useQuery({
-        queryKey: ['searchList', debouncedKeyword],
-        queryFn: () => findNameList(debouncedKeyword),
-        enabled: !!debouncedKeyword && !isAutoSearch,
-        initialData: [],
-        select: (res) => (res?.length && res.length > 10 ? res.slice(0, 9) : res) || [],
-    });*/
-
-    const {data} = useQuery<IPokemonNames>(GET_ALL_NAMES, {
+    const {data, refetch} = useQuery<IPokemonNames>(GET_ALL_NAMES, {
         variables: {
             lastId: lastId,
             lan: language,
         },
     })
+
+    useEffect(() => {
+        refetch();
+    }, [language]);
 
     const handleModalClose = () => {
         setOpen(prev => !prev);
@@ -51,9 +44,9 @@ function SearchBox() {
     }
 
     const changeSelectItem = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (data?.names.length === 0) return;
+        if (filteredData?.length === 0) return;
 
-        const lastIndex = data?.names.length - 1;
+        const lastIndex = filteredData!.length - 1;
 
         switch (e.key) {
             case 'ArrowDown':
@@ -75,25 +68,41 @@ function SearchBox() {
         }
     }
 
-    const items = data?.names.map((item, idx) => (
-        <Button key={idx}
-                variant={"subtle"}
-                fullWidth
-                ref={focusIdx === idx ? focusRef : undefined}
-                styles={{inner: {display: 'flex', justifyContent: 'left'}}}
-                className={`${style.item} ${focusIdx === idx && style.active}`}
-                onClick={() => {
-                    handleModalClose();
-                    navigate(`/${item!.id}`);
-                }}>
-            {item!.name}
-        </Button>
-    ))
+    const items = useMemo(() => {
+        if (filteredData) {
+            return filteredData.map((item, idx) => {
+                if (idx > 9) return;
+
+                return (
+                    <Button key={idx}
+                            variant={"subtle"}
+                            fullWidth
+                            ref={focusIdx === idx ? focusRef : undefined}
+                            styles={{inner: {display: 'flex', justifyContent: 'left'}}}
+                            className={`${style.item} ${focusIdx === idx && style.active}`}
+                            onClick={() => {
+                                handleModalClose();
+                                navigate(`/${item!.id}`);
+                            }}>
+                        {item!.name}
+                    </Button>
+                )
+            })
+        }
+    }, [filteredData]);
+
+    useEffect(() => {
+        if (searchKeyword) {
+            setFilteredData(data?.names.filter(item => new RegExp(searchKeyword, "i").test(item.name)));
+        } else {
+            setFilteredData([]);
+        }
+    }, [searchKeyword]);
 
     useEffect(() => {
         setIsAutoSearch(focusIdx !== -1);
-        setAutoSearchKeyword(focusIdx !== -1 ? data![focusIdx]!.name : '');
-    }, [focusIdx, data]);
+        setAutoSearchKeyword(focusIdx !== -1 ? filteredData![focusIdx].name : '');
+    }, [focusIdx]);
 
     return (
         <>

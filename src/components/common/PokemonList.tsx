@@ -1,6 +1,6 @@
 import {useMemo} from "react";
 import {SimpleGrid} from "@mantine/core";
-import {IPokemon, IPokemonList} from "../../ts/interface/pokemons.interfaces.ts";
+import {IPokemonList} from "../../ts/interface/pokemons.interfaces.ts";
 import PokemonBtn from "./PokemonBtn.tsx";
 
 function PokemonList({data}: { data: IPokemonList }) {

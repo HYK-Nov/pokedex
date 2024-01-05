@@ -9,6 +9,11 @@ function LanguageBtn() {
     const isMobile = useMediaQuery(`(max-width: 768px)`);
     const [language, setLanguage] = useRecoilState(languageState);
 
+    const handleLanguage = (lan: string) => {
+        setLanguage(lan);
+        window.sessionStorage.setItem("language", lan);
+    }
+
     return (
         <>
             {!isMobile ?
@@ -16,16 +21,16 @@ function LanguageBtn() {
                     <Flex gap={"0.5rem"}>
                         <IconWorld color={"white"}/>
                         <UnstyledButton className={`${style.menuItem} ${language === "ko" && style.active}`}
-                                        onClick={() => setLanguage("ko")}>한국어</UnstyledButton>
+                                        onClick={() => handleLanguage("ko")}>한국어</UnstyledButton>
                     </Flex>
                     <UnstyledButton className={`${style.menuItem} ${language === "en" && style.active}`}
-                                    onClick={() => setLanguage("en")}>ENG</UnstyledButton>
+                                    onClick={() => handleLanguage("en")}>ENG</UnstyledButton>
                 </Group>
                 :
                 <Group gap={"0.5rem"}>
                     <IconWorld color={"white"}/>
                     <UnstyledButton className={`${style.menuItem} ${style.active}`}
-                                    onClick={() => setLanguage(prev => prev === "ko" ? "en" : "ko")}>
+                                    onClick={() => handleLanguage(language === "ko" ? "en" : "ko")}>
                         {language === "ko" ? "한국어" : "ENG"}
                     </UnstyledButton>
                 </Group>

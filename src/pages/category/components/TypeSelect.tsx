@@ -7,23 +7,24 @@ interface IProps {
     onClick: (item: string) => void;
 }
 
-const TYPE = ["normal", "fire", "water", "grass", "flying",
-    "fighting", "poison", "electric", "ground", "rock",
-    "psychic", "ice", "bug", "ghost", "steel",
+const TYPE = ["normal", "fighting", "flying", "poison", "ground",
+    "rock", "bug", "ghost", "steel", "fire",
+    "water", "grass", "electric", "psychic", "ice",
     "dragon", "dark", "fairy"];
 
 function TypeSelect({types, onClick}: IProps) {
 
-    const typeItems = useMemo(() => TYPE.map((item) => (
-        <TypeBtn key={item}
+    const typeItems = useMemo(() => TYPE.map((item, idx) => (
+        <TypeBtn key={idx}
+                 id={idx + 1}
                  type={item}
                  disabled={!types.includes(item)}
-                 // onlyIcon={true}
+            // onlyIcon={true}
                  onClick={() => onClick(item)}/>
     )), [types]);
 
     return (
-        <SimpleGrid cols={{base: 2, sm:3, md:6}} mb={"1rem"}>
+        <SimpleGrid cols={{base: 2, sm: 3, md: 6}} mb={"1rem"}>
             {typeItems}
         </SimpleGrid>
     );

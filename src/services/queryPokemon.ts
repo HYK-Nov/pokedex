@@ -81,14 +81,14 @@ export const GET_ALL_NAMES = gql`
 `;
 
 export const GET_SCROLL_CONTENTS = gql`
-    query GetScrollContents($lastPage: Int, $nextPage: Int, $lan: String) {
+    query GetScrollContents($lastPage: Int = 0, $nextPage: Int = 16, $lan: String!) {
       pokemon: pokemon_v2_pokemonspeciesname(where: {pokemon_species_id: {_gt: $lastPage, _lte: $nextPage}, pokemon_v2_language: {name: {_eq: $lan}}}) {
         name
         id: pokemon_species_id
         specy: pokemon_v2_pokemonspecy {
           pokemons: pokemon_v2_pokemons {
             types: pokemon_v2_pokemontypes {
-              type:pokemon_v2_type {
+              type: pokemon_v2_type {
                 name
                 id
               }
@@ -97,4 +97,89 @@ export const GET_SCROLL_CONTENTS = gql`
         }
       }
 }
+`;
+
+export const GET_TYPE_CONTENTS = gql`
+    query GetTypeContents($type: String, $type_another: String, $lan: String) {
+      pokemon: pokemon_v2_pokemonspeciesname(where: {
+        pokemon_v2_language: {name: {_eq: "ko"}}, 
+        pokemon_v2_pokemonspecy: {
+            pokemon_v2_pokemondexnumbers: {
+                pokemon_v2_pokedex: {
+                    name: {_regex: "kanto", _nregex: "letsgo"}}}, 
+                    pokemon_v2_pokemons: {
+                        _and: [
+                            {pokemon_v2_pokemontypes: {pokemon_v2_type: {name: {_regex: "grass"}}}},
+                            {pokemon_v2_pokemontypes: {pokemon_v2_type: {name: {_regex: "poison"}}}}
+                        ]
+                    }
+                }
+            }, 
+        order_by: {id: asc}) {
+            name
+            id: pokemon_species_id
+            specy: pokemon_v2_pokemonspecy {
+              pokemons: pokemon_v2_pokemons {
+                types: pokemon_v2_pokemontypes {
+                  type: pokemon_v2_type {
+                    name
+                    id
+                  }
+                }
+              }
+            }
+          }
+    }
+`;
+
+export const GET_REGION_CONTENTS = gql`
+    query GetRegionContents($region: String, $lan: String) {
+      pokemon: pokemon_v2_pokemonspeciesname(where: {pokemon_v2_language: {name: {_eq: $lan}}, pokemon_v2_pokemonspecy: {pokemon_v2_pokemondexnumbers: {pokemon_v2_pokedex: {name: {_in: $region}}}}}) {
+        name
+        id: pokemon_species_id
+        specy: pokemon_v2_pokemonspecy {
+          pokemons: pokemon_v2_pokemons {
+            types: pokemon_v2_pokemontypes {
+              type: pokemon_v2_type {
+                id
+                name
+              }
+            }
+          }
+        }
+      }
+    }
+`;
+
+export const GET_FILTERED_CONTENTS = gql`
+    query GetFilteredContents($firstType: String, $secondType: String, $region: String, $lan: String) {
+      pokemon: pokemon_v2_pokemonspeciesname(where: {
+        pokemon_v2_language: {name: {_eq: $lan}}, 
+        pokemon_v2_pokemonspecy: {
+            pokemon_v2_pokemondexnumbers: {
+                pokemon_v2_pokedex: {
+                    name: {_regex: $region, _nregex: "letsgo"}}}, 
+                    pokemon_v2_pokemons: {
+                        _and: [
+                            {pokemon_v2_pokemontypes: {pokemon_v2_type: {name: {_regex: $firstType}}}},
+                            {pokemon_v2_pokemontypes: {pokemon_v2_type: {name: {_regex: $secondType}}}}
+                        ]
+                    }
+                }
+            }, 
+        order_by: {id: asc}) {
+            name
+            id: pokemon_species_id
+            specy: pokemon_v2_pokemonspecy {
+                pokemons: pokemon_v2_pokemons {
+                    types: pokemon_v2_pokemontypes {
+                        type: pokemon_v2_type {
+                            id
+                            name
+                        }
+                    }
+                }
+            }
+        }
+    }
 `;

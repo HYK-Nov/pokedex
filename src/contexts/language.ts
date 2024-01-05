@@ -2,5 +2,5 @@ import {atom} from "recoil";
 
 export const languageState = atom<string>({
     key: "languageState",
-    default: "ko",
+    default: window.sessionStorage.getItem("language") === "en" ? "en" : "ko",
 })

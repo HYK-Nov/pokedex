@@ -1,4 +1,4 @@
-import {lazy, useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useInfiniteScroll} from "../../hooks/useInfiniteScroll.ts";
 import {useRecoilValue} from "recoil";
 import {lastIdState} from "../../contexts/lastId.ts";
@@ -8,8 +8,7 @@ import {GET_SCROLL_CONTENTS} from "../../services/queryPokemon.ts";
 import {IPokemonList} from "../../ts/interface/pokemons.interfaces.ts";
 import LoadingSkeleton from "../../components/common/LoadingSkeleton.tsx";
 import {languageState} from "../../contexts/language.ts";
-
-const PokemonList = lazy(() => import("../../components/common/PokemonList.tsx"));
+import PokemonList from "../../components/common/PokemonList.tsx";
 
 const PAGE_SIZE = 16;
 
@@ -23,8 +22,6 @@ function Main() {
 
     const {data, fetchMore, refetch} = useQuery<IPokemonList>(GET_SCROLL_CONTENTS, {
         variables: {
-            lastPage: 1,
-            nexPage: 16,
             lan: language,
         }
     })
@@ -38,14 +35,13 @@ function Main() {
     }, [data]);
 
     useEffect(() => {
-        refetch();
-        setListData({pokemon:[]});
         setLastPage(0);
+        refetch().then(res => setListData(res.data));
     }, [language]);
 
     const ref = useInfiniteScroll(async (entry, observer) => {
         observer.unobserve(entry.target);
-        if (!scrolling && entry.isIntersecting && lastPage + PAGE_SIZE <= lastId) {
+        if (!scrolling && entry.isIntersecting && lastPage + PAGE_SIZE <= lastId && data) {
             try {
                 setScrolling(true);
                 await fetchMore({
@@ -69,10 +65,10 @@ function Main() {
         <>
             {showSkeleton && <LoadingSkeleton/>}
             <Stack gap={"1.5rem"} align={"center"}>
-                <PokemonList data={listData!}/>
+                <PokemonList data={listData}/>
                 {scrolling && <Loader/>}
             </Stack>
-            <div ref={ref} style={{height: "1px"}}/>
+            {listData && <div ref={ref} style={{height: "1px"}}/>}
         </>
     );
 }

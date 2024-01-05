@@ -1,49 +1,32 @@
 import {useNavigate, useSearchParams} from "react-router-dom";
-import {lazy, Suspense, useEffect, useState} from "react";
-import {useFetch} from "../../hooks/useFetch.ts";
+import {useEffect, useState} from "react";
 import {Button, Paper, SimpleGrid, Table} from "@mantine/core";
 import {useRecoilValue} from "recoil";
 import TypeSelect from "./components/TypeSelect.tsx";
 import RegionSelect from "./components/RegionSelect.tsx";
-import {REGION_NUM} from "../../ts/types/pokemons.types.ts";
-import {useQuery} from "@tanstack/react-query";
-import {lastIdState} from "../../contexts/lastId.ts";
-import {IPokemon} from "../../ts/interface/pokemons.interfaces.ts";
-import LoadingSkeleton from "../../components/common/LoadingSkeleton.tsx";
+import {IPokemonList} from "../../ts/interface/pokemons.interfaces.ts";
 import {languageState} from "../../contexts/language.ts";
-
-const PokemonList = lazy(async () => {
-    const [module] = await Promise.all([
-        import("../../components/common/PokemonList.tsx"),
-        new Promise(resolve => setTimeout(resolve, 800))
-    ]);
-    return ({default: module.default});
-});
+import {useQuery} from "@apollo/client";
+import {GET_FILTERED_CONTENTS} from "../../services/queryPokemon.ts";
+import PokemonList from "../../components/common/PokemonList.tsx";
 
 function Category() {
     const language = useRecoilValue(languageState);
     const navigate = useNavigate();
-    const lastId = useRecoilValue(lastIdState);
     const [searchParams] = useSearchParams();
     const [types, setTypes] = useState<string[]>([]);
     const [region, setRegion] = useState("");
-    const [totalData, setTotalData] = useState<IPokemon[]>([]);
+    const [totalData, setTotalData] = useState<IPokemonList>({pokemon: []});
     const [shouldUpdateData, setShouldUpdateData] = useState(true);
 
-    const {findMatchType, findMatchRegion} = useFetch();
-
-    const {data: typeResult, isPending: isTypeResultLoading} = useQuery({
-        queryKey: ['typesResult', types],
-        queryFn: () => findMatchType(types),
-        enabled: shouldUpdateData,
-        initialData: [],
-    })
-
-    const {data: regionResult, isPending: isRegionResultLoading} = useQuery({
-        queryKey: ['regionResult', region],
-        queryFn: () => findMatchRegion(REGION_NUM[region]),
-        enabled: shouldUpdateData,
-        initialData: [],
+    const {data} = useQuery(GET_FILTERED_CONTENTS, {
+        variables: {
+            firstType: types[0] || "",
+            secondType: types[1] || "",
+            region: region || "",
+            lan: language,
+        },
+        skip: !shouldUpdateData,
     })
 
     const generateParams = (types: string[], region: string) => {
@@ -93,7 +76,6 @@ function Category() {
         const typeParams = searchParams.get("type");
         const regionParams = searchParams.get("region");
         setShouldUpdateData(true);
-        setTotalData([]);
 
         if (typeParams && typeParams.length > 0) {
             const newTypes = typeParams!.split(",") || [];
@@ -110,18 +92,10 @@ function Category() {
     }, [searchParams]);
 
     useEffect(() => {
-        if (shouldUpdateData && !isTypeResultLoading && !isRegionResultLoading) {
-            if (typeResult && regionResult) {
-                if (typeResult.length > 0 && regionResult.length > 0) {
-                    setTotalData(typeResult.filter(v1 => regionResult.find(v2 => (v1.name === v2.name) && (Number(v1.url.split("/")[6]) <= lastId))));
-                } else if (typeResult.length > 0) {
-                    setTotalData(typeResult.filter(v => Number(v.url.split("/")[6]) <= lastId));
-                } else if (regionResult.length > 0) {
-                    setTotalData(regionResult.filter(v => Number(v.url.split("/")[6]) <= lastId));
-                }
-            }
+        if (shouldUpdateData) {
+            setTotalData(data);
         }
-    }, [typeResult, regionResult, shouldUpdateData]);
+    }, [data]);
 
     return (
         <>
@@ -160,9 +134,7 @@ function Category() {
 
             <div style={{margin: "3rem auto"}}>
                 {searchParams.size > 0 &&
-                    <Suspense fallback={<LoadingSkeleton/>}>
-                        <PokemonList data={totalData}/>
-                    </Suspense>
+                    <PokemonList data={totalData}/>
                 }
             </div>
         </>

@@ -153,20 +153,20 @@ export const GET_REGION_CONTENTS = gql`
 
 export const GET_FILTERED_CONTENTS = gql`
     query GetFilteredContents($firstType: String, $secondType: String, $region: String, $lan: String) {
-      pokemon: pokemon_v2_pokemonspeciesname(where: {
-        pokemon_v2_language: {name: {_eq: $lan}}, 
-        pokemon_v2_pokemonspecy: {
-            pokemon_v2_pokemondexnumbers: {
-                pokemon_v2_pokedex: {
-                    name: {_regex: $region, _nregex: "letsgo"}}}, 
-                    pokemon_v2_pokemons: {
-                        _and: [
-                            {pokemon_v2_pokemontypes: {pokemon_v2_type: {name: {_regex: $firstType}}}},
-                            {pokemon_v2_pokemontypes: {pokemon_v2_type: {name: {_regex: $secondType}}}}
-                        ]
-                    }
+        pokemon: pokemon_v2_pokemonspeciesname(where: {
+            pokemon_v2_language: {name: {_eq: $lan}}, 
+            pokemon_v2_pokemonspecy: {
+                pokemon_v2_generation: {
+                    pokemon_v2_region: {name: {_regex: $region}}
+                }, 
+                pokemon_v2_pokemons: {
+                    _and: [
+                        {pokemon_v2_pokemontypes: {pokemon_v2_type: {name: {_regex: $firstType}}}},
+                        {pokemon_v2_pokemontypes: {pokemon_v2_type: {name: {_regex: $secondType}}}}
+                    ]
                 }
-            }, 
+            }
+        }, 
         order_by: {id: asc}) {
             name
             id: pokemon_species_id

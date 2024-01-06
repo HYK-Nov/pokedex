@@ -20,7 +20,7 @@ function Header() {
                                 <b className={`${style.logo}`}>{language === "ko" ? "포켓몬 도감" : "Pokedex"}</b>
                             </UnstyledButton>
                             <UnstyledButton onClick={() => navigate("/category")}>
-                                <b className={`${style.menuItem}`}>{language === "ko" ? "타입" : "Type"}</b>
+                                <b className={`${style.menuItem}`}>{language === "ko" ? "카테고리" : "Category"}</b>
                             </UnstyledButton>
                         </div>
 

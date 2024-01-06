@@ -9,6 +9,7 @@ import {languageState} from "../../contexts/language.ts";
 import {useQuery} from "@apollo/client";
 import {GET_FILTERED_CONTENTS} from "../../services/queryPokemon.ts";
 import PokemonList from "../../components/common/PokemonList.tsx";
+import LoadingSkeleton from "../../components/common/LoadingSkeleton.tsx";
 
 function Category() {
     const language = useRecoilValue(languageState);
@@ -19,14 +20,14 @@ function Category() {
     const [totalData, setTotalData] = useState<IPokemonList>({pokemon: []});
     const [shouldUpdateData, setShouldUpdateData] = useState(true);
 
-    const {data} = useQuery(GET_FILTERED_CONTENTS, {
+    const {data, loading} = useQuery(GET_FILTERED_CONTENTS, {
         variables: {
             firstType: types[0] || "",
             secondType: types[1] || "",
             region: region || "",
             lan: language,
         },
-        skip: !shouldUpdateData,
+        skip: !shouldUpdateData || (types.length < 1 && region === ""),
     })
 
     const generateParams = (types: string[], region: string) => {
@@ -133,8 +134,9 @@ function Category() {
             </Paper>
 
             <div style={{margin: "3rem auto"}}>
-                {searchParams.size > 0 &&
-                    <PokemonList data={totalData}/>
+                {loading ?
+                    <LoadingSkeleton/> :
+                    searchParams.size > 0 && <PokemonList data={totalData}/>
                 }
             </div>
         </>

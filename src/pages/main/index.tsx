@@ -16,14 +16,13 @@ function Main() {
     const lastId = useRecoilValue(lastIdState);
     const language = useRecoilValue(languageState);
     const [scrolling, setScrolling] = useState(false);
-    const [showSkeleton, setShowSkeleton] = useState(true);
     const [lastPage, setLastPage] = useState(0);
     const [listData, setListData] = useState<IPokemonList>({pokemon: []});
 
-    const {data, fetchMore, refetch} = useQuery<IPokemonList>(GET_SCROLL_CONTENTS, {
+    const {data, fetchMore, refetch, loading} = useQuery<IPokemonList>(GET_SCROLL_CONTENTS, {
         variables: {
             lan: language,
-        }
+        },
     })
 
     useEffect(() => {
@@ -31,7 +30,6 @@ function Main() {
         setLastPage(lastSpecyId!);
 
         setListData(prev => ({pokemon: [...(prev.pokemon || []), ...(data?.pokemon || [])]}))
-        setShowSkeleton(false);
     }, [data]);
 
     useEffect(() => {
@@ -63,11 +61,13 @@ function Main() {
 
     return (
         <>
-            {showSkeleton && <LoadingSkeleton/>}
-            <Stack gap={"1.5rem"} align={"center"}>
-                <PokemonList data={listData}/>
-                {scrolling && <Loader/>}
-            </Stack>
+            {loading ?
+                <LoadingSkeleton/> :
+                <Stack gap={"1.5rem"} align={"center"}>
+                    <PokemonList data={listData}/>
+                    {scrolling && <Loader/>}
+                </Stack>
+            }
             {listData && <div ref={ref} style={{height: "1px"}}/>}
         </>
     );

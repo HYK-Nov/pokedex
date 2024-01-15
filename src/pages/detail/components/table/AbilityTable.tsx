@@ -11,8 +11,8 @@ function AbilityTable({ability}: { ability: IPokemonAbility[] }) {
         if (item !== null) {
             return (
                 <Table.Tr key={idx}>
-                    <Table.Th w={"20%"}>{item.abilities.ability[0].name} {item.is_hidden && "*"}</Table.Th>
-                    <Table.Td>{item.abilities.ability_text[0].text}</Table.Td>
+                    <Table.Th w={"20%"}>{item.abilities.ability[0]?.name} {item.is_hidden && "*"}</Table.Th>
+                    <Table.Td>{item.abilities.ability_text[0]?.text}</Table.Td>
                 </Table.Tr>
             );
         } else return null;

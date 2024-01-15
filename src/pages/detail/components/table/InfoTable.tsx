@@ -9,6 +9,8 @@ function InfoTable({pokemon}: {pokemon: IPokemonInfo[]}) {
     const isMobile = useMediaQuery(`(max-width: 36em)`);
     const language = useRecoilValue(languageState);
 
+    console.log(pokemon);
+
     // 포켓몬 이름 현재 언어 기준 맨 앞으로 정렬
     const names = [...pokemon[0].specy?.names || []].sort((prev, next) => {
         if (prev.language.name === language) return -1;

@@ -68,7 +68,7 @@ function Main() {
                     {scrolling && <Loader/>}
                 </Stack>
             }
-            {listData && <div ref={ref} style={{height: "1px"}}/>}
+            {(!loading && listData) && <div ref={ref} style={{height: "1px"}}/>}
         </>
     );
 }

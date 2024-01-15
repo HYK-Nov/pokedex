@@ -17,10 +17,8 @@ function SearchBox() {
     const isMobile = useMediaQuery(`(max-width: 36em)`);
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
-    const [isAutoSearch, setIsAutoSearch] = useState(false);
     const [filteredData, setFilteredData] = useState<IPokemonName[]>();
     const [searchKeyword, setSearchKeyword] = useState("");
-    const [autoSearchKeyword, setAutoSearchKeyword] = useState("");
     const [focusIdx, setFocusIdx] = useState(-1);
     const focusRef = useRef<HTMLButtonElement | null>(null);
 
@@ -38,8 +36,6 @@ function SearchBox() {
     const handleModalClose = () => {
         setOpen(prev => !prev);
         setSearchKeyword("");
-        setAutoSearchKeyword("");
-        setIsAutoSearch(false);
         setFocusIdx(-1);
     }
 
@@ -71,7 +67,7 @@ function SearchBox() {
     const items = useMemo(() => {
         if (filteredData) {
             return filteredData.map((item, idx) => {
-                if (idx > 9) return;
+                // if (idx > 9) return;
 
                 return (
                     <Button key={idx}
@@ -89,20 +85,20 @@ function SearchBox() {
                 )
             })
         }
-    }, [filteredData]);
+    }, [filteredData, focusIdx]);
 
     useEffect(() => {
         if (searchKeyword) {
-            setFilteredData(data?.names.filter(item => new RegExp(searchKeyword, "i").test(item.name)));
+            const res = data?.names.filter(item => new RegExp(searchKeyword, "i").test(item.name));
+            setFilteredData(res);
         } else {
             setFilteredData([]);
         }
     }, [searchKeyword]);
 
     useEffect(() => {
-        setIsAutoSearch(focusIdx !== -1);
-        setAutoSearchKeyword(focusIdx !== -1 ? filteredData![focusIdx].name : '');
-    }, [focusIdx]);
+        setFocusIdx(-1);
+    }, [filteredData]);
 
     return (
         <>
@@ -115,11 +111,9 @@ function SearchBox() {
                 <Modal.Content>
                     <Modal.Header>
                         <Modal.Title w={"100%"}>
-                            <Input value={isAutoSearch ? autoSearchKeyword : searchKeyword}
-                                   onKeyDown={changeSelectItem}
+                            <Input onKeyDown={changeSelectItem}
                                    onChange={e => {
                                        setSearchKeyword(e.target.value);
-                                       setIsAutoSearch(false);
                                    }}/>
                         </Modal.Title>
                     </Modal.Header>
